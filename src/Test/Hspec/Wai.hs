@@ -30,7 +30,6 @@ import           Network.Wai (Application)
 import           Data.Text.Lazy.Encoding (encodeUtf8)
 import           Data.String
 import           Network.Wai (Request(..))
-import           Data.Conduit (yield)
 
 type WaiExpectation = WaiSession ()
 
@@ -72,16 +71,16 @@ shouldRespondWith action matcher = do
 get :: ByteString -> WaiSession SResponse
 get p = request methodGet p ""
 
-post :: ByteString -> ByteString -> WaiSession SResponse
+post :: ByteString -> LB.ByteString -> WaiSession SResponse
 post = request methodPost
 
-put :: ByteString -> ByteString -> WaiSession SResponse
+put :: ByteString -> LB.ByteString -> WaiSession SResponse
 put = request methodPut
 
-request :: Method -> ByteString -> ByteString -> WaiSession SResponse
-request m p b = getApp >>= liftIO . runSession (Wai.request req)
+request :: Method -> ByteString -> LB.ByteString -> WaiSession SResponse
+request m p b = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req b)
   where
-    req = setPath defaultRequest {requestMethod = m, requestBody = yield b} p
+    req = setPath defaultRequest {requestMethod = m} p
 
 getApp :: WaiSession Application
 getApp = WaiSession ask

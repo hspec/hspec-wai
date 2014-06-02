@@ -20,7 +20,6 @@ library
     , bytestring
     , text
     , transformers
-    , conduit
     , http-types
     , wai
     , wai-test
