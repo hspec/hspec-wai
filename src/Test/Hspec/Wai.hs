@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings, GeneralizedNewtypeDeriving, FlexibleInstances, TypeFamilies #-}
 module Test.Hspec.Wai (
   WaiExpectation
+, WaiSession
+, runWaiSession
 , get
 , post
 , put
@@ -33,12 +35,15 @@ import           Network.Wai (Request(..))
 
 type WaiExpectation = WaiSession ()
 
-newtype WaiSession a = WaiSession {runWaiSession :: Session a}
+newtype WaiSession a = WaiSession {unWaiSession :: Session a}
   deriving (Functor, Applicative, Monad, MonadIO)
+
+runWaiSession :: WaiSession a -> Application -> IO a
+runWaiSession = runSession . unWaiSession
 
 instance Example WaiExpectation where
   type Arg WaiExpectation = Application
-  evaluateExample e p action = evaluateExample (action $ runSession (runWaiSession e)) p ($ ())
+  evaluateExample e p action = evaluateExample (action $ runWaiSession e) p ($ ())
 
 data ResponseMatcher = ResponseMatcher {
   matchBody :: BodyMatcher
