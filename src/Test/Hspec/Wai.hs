@@ -9,6 +9,7 @@ module Test.Hspec.Wai (
 , request
 , shouldRespondWith
 , ResponseMatcher(..)
+, BodyMatcher(..)
 ) where
 
 import           Control.Applicative
