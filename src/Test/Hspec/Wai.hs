@@ -3,6 +3,7 @@ module Test.Hspec.Wai (
   WaiExpectation
 , get
 , post
+, put
 , request
 , shouldRespondWith
 , ResponseMatcher(..)
@@ -73,6 +74,9 @@ get p = request methodGet p ""
 
 post :: ByteString -> ByteString -> WaiSession SResponse
 post = request methodPost
+
+put :: ByteString -> ByteString -> WaiSession SResponse
+put = request methodPut
 
 request :: Method -> ByteString -> ByteString -> WaiSession SResponse
 request m p b = getApp >>= liftIO . runSession (Wai.request req)
