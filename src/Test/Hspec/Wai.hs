@@ -42,11 +42,11 @@ instance Example WaiExpectation where
 
 data ResponseMatcher = ResponseMatcher {
   matchBody :: BodyMatcher
-, matchStatus :: StatusMatcher
+, matchStatus :: Int
 }
 
 instance IsString ResponseMatcher where
-  fromString s = ResponseMatcher (fromString s) AnyStatus
+  fromString s = ResponseMatcher (fromString s) 200
 
 instance Num ResponseMatcher where
   fromInteger n = ResponseMatcher AnyBody (fromInteger n)
@@ -60,21 +60,10 @@ data BodyMatcher = MatchBody LB.ByteString | AnyBody
 instance IsString BodyMatcher where
   fromString = MatchBody . encodeUtf8 . fromString
 
-data StatusMatcher = MatchStatus Int | AnyStatus
-
-instance Num StatusMatcher where
-  fromInteger = MatchStatus . fromIntegral
-  (+) =    error "StatusMatcher does not support (+)"
-  (*) =    error "StatusMatcher does not support (*)"
-  abs =    error "StatusMatcher does not support `abs`"
-  signum = error "StatusMatcher does not support `signum`"
-
 shouldRespondWith :: WaiSession SResponse -> ResponseMatcher -> WaiExpectation
 shouldRespondWith action matcher = do
   r <- action
-  case matchStatus matcher of
-    AnyStatus -> return ()
-    MatchStatus n -> (statusCode . simpleStatus) r `Lifted.shouldBe` n
+  (statusCode . simpleStatus) r `Lifted.shouldBe` matchStatus matcher
   case matchBody matcher of
     AnyBody -> return ()
     MatchBody b -> simpleBody r `Lifted.shouldBe` b
