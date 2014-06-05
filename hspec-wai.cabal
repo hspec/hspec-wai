@@ -15,6 +15,8 @@ library
       src
   exposed-modules:
       Test.Hspec.Wai
+  other-modules:
+      Test.Hspec.Wai.Matcher
   build-depends:
       base == 4.*
     , bytestring
@@ -24,7 +26,6 @@ library
     , wai
     , wai-test
     , hspec2
-    , hspec-expectations-lifted
 
 test-suite spec
   type:
@@ -32,12 +33,19 @@ test-suite spec
   ghc-options:
       -Wall -Werror
   hs-source-dirs:
-      test
+      src, test
   main-is:
       Spec.hs
   build-depends:
       base == 4.*
-    , hspec-wai
+    , bytestring
+    , text
+    , transformers
+    , http-types
+    , wai
+    , wai-test
+    , hspec2
+
     , hspec-meta
 
 test-suite example

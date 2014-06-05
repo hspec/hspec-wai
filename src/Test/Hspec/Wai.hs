@@ -9,13 +9,12 @@ module Test.Hspec.Wai (
 , request
 , shouldRespondWith
 , ResponseMatcher(..)
-, BodyMatcher(..)
 ) where
 
 import           Control.Applicative
+import           Data.Foldable
 
 import           Test.Hspec
-import qualified Test.Hspec.Expectations.Lifted as Lifted
 
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
@@ -30,9 +29,9 @@ import           Control.Monad.Trans.Reader
 import           Control.Monad.IO.Class
 import           Network.Wai (Application)
 
-import           Data.Text.Lazy.Encoding (encodeUtf8)
-import           Data.String
 import           Network.Wai (Request(..))
+
+import           Test.Hspec.Wai.Matcher
 
 type WaiExpectation = WaiSession ()
 
@@ -46,33 +45,10 @@ instance Example WaiExpectation where
   type Arg WaiExpectation = Application
   evaluateExample e p action = evaluateExample (action $ runWaiSession e) p ($ ())
 
-data ResponseMatcher = ResponseMatcher {
-  matchBody :: BodyMatcher
-, matchStatus :: Int
-}
-
-instance IsString ResponseMatcher where
-  fromString s = ResponseMatcher (fromString s) 200
-
-instance Num ResponseMatcher where
-  fromInteger n = ResponseMatcher AnyBody (fromInteger n)
-  (+) =    error "ResponseMatcher does not support (+)"
-  (*) =    error "ResponseMatcher does not support (*)"
-  abs =    error "ResponseMatcher does not support `abs`"
-  signum = error "ResponseMatcher does not support `signum`"
-
-data BodyMatcher = MatchBody LB.ByteString | AnyBody
-
-instance IsString BodyMatcher where
-  fromString = MatchBody . encodeUtf8 . fromString
-
 shouldRespondWith :: WaiSession SResponse -> ResponseMatcher -> WaiExpectation
 shouldRespondWith action matcher = do
   r <- action
-  (statusCode . simpleStatus) r `Lifted.shouldBe` matchStatus matcher
-  case matchBody matcher of
-    AnyBody -> return ()
-    MatchBody b -> simpleBody r `Lifted.shouldBe` b
+  forM_ (match r matcher) (liftIO . expectationFailure)
 
 get :: ByteString -> WaiSession SResponse
 get p = request methodGet p ""
