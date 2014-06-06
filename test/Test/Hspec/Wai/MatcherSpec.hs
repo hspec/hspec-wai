@@ -57,7 +57,7 @@ spec = do
     context "if expected header does not exist" $ do
       it "should be ok" $ do
         SResponse status200 [(hLocation, "http://example.com" )] "" `haveHeader` (hContentType, "text/plain")
-          `shouldBe` Just ( "header doesn't exist: " ++ (show hContentType))
+          `shouldBe` Just ("header doesn't exist: " ++ show hContentType)
 
     context "if expected header has different value" $ do
       it "should be ok" $ do
