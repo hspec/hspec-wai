@@ -20,6 +20,7 @@ instance IsString ResponseMatcher where
 instance Num ResponseMatcher where
   fromInteger n = ResponseMatcher (fromInteger n) Nothing
   (+) =    error "ResponseMatcher does not support (+)"
+  (-) =    error "ResponseMatcher does not support (-)"
   (*) =    error "ResponseMatcher does not support (*)"
   abs =    error "ResponseMatcher does not support `abs`"
   signum = error "ResponseMatcher does not support `signum`"
