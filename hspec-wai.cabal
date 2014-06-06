@@ -15,6 +15,7 @@ library
       src
   exposed-modules:
       Test.Hspec.Wai
+    , Test.Hspec.Wai.Internal
   other-modules:
       Test.Hspec.Wai.Matcher
   build-depends:

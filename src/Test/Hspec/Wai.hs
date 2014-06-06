@@ -1,9 +1,6 @@
 {-# LANGUAGE OverloadedStrings, GeneralizedNewtypeDeriving, FlexibleInstances, TypeFamilies #-}
 module Test.Hspec.Wai (
-  WaiExpectation
-, WaiSession
-, runWaiSession
-, get
+  get
 , post
 , put
 , request
@@ -32,19 +29,8 @@ import           Network.Wai (Application)
 
 import           Network.Wai (Request(..))
 
+import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
-
-type WaiExpectation = WaiSession ()
-
-newtype WaiSession a = WaiSession {unWaiSession :: Session a}
-  deriving (Functor, Applicative, Monad, MonadIO)
-
-runWaiSession :: WaiSession a -> Application -> IO a
-runWaiSession = runSession . unWaiSession
-
-instance Example WaiExpectation where
-  type Arg WaiExpectation = Application
-  evaluateExample e p action = evaluateExample (action $ runWaiSession e) p ($ ())
 
 shouldHaveHeader :: WaiSession SResponse -> Header -> WaiExpectation
 shouldHaveHeader action header = do
@@ -69,6 +55,3 @@ request :: Method -> ByteString -> LB.ByteString -> WaiSession SResponse
 request m p b = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req b)
   where
     req = setPath defaultRequest {requestMethod = m} p
-
-getApp :: WaiSession Application
-getApp = WaiSession ask
