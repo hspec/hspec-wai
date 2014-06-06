@@ -47,3 +47,23 @@ spec = do
           , "  expected: \"bar\""
           , "  but got:  \"foo\""
           ]
+
+  describe "haveHeader" $ do
+    context "if expected header exists in actual response" $ do
+      it "should be ok" $ do
+        SResponse status200 [(hContentType, "text/plain" )] "" `haveHeader` (hContentType, "text/plain")
+          `shouldBe` Nothing
+
+    context "if expected header does not exist" $ do
+      it "should be ok" $ do
+        SResponse status200 [(hLocation, "http://example.com" )] "" `haveHeader` (hContentType, "text/plain")
+          `shouldBe` Just ( "header doesn't exist: " ++ (show hContentType))
+
+    context "if expected header has different value" $ do
+      it "should be ok" $ do
+        SResponse status200 [(hContentType, "image/jpeg" )] "" `haveHeader` (hContentType, "text/plain")
+          `shouldBe` (Just . unlines) [
+            "header mismatch"
+          , "  expected: \"text/plain\""
+          , "  but got:  \"image/jpeg\""
+          ]

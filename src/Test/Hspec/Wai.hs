@@ -7,6 +7,7 @@ module Test.Hspec.Wai (
 , post
 , put
 , request
+, shouldHaveHeader
 , shouldRespondWith
 , ResponseMatcher(..)
 ) where
@@ -44,6 +45,11 @@ runWaiSession = runSession . unWaiSession
 instance Example WaiExpectation where
   type Arg WaiExpectation = Application
   evaluateExample e p action = evaluateExample (action $ runWaiSession e) p ($ ())
+
+shouldHaveHeader :: WaiSession SResponse -> Header -> WaiExpectation
+shouldHaveHeader action header = do
+  r <- action
+  forM_ (haveHeader r header) (liftIO . expectationFailure)
 
 shouldRespondWith :: WaiSession SResponse -> ResponseMatcher -> WaiExpectation
 shouldRespondWith action matcher = do

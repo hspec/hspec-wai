@@ -5,7 +5,7 @@ module ExampleSpec (spec) where
 import           Test.Hspec
 import           Test.Hspec.Wai
 
-import           Network.HTTP.Types (status200)
+import           Network.HTTP.Types (status200, hContentType)
 import           Network.Wai        (Application, responseLBS)
 
 app :: Application
@@ -25,3 +25,6 @@ spec = before (run app) $ do
 
     it "reponds with 200 / 'bar'" $ do
       get "/foo" `shouldRespondWith` "hello" {matchStatus = 200}
+
+    it "has Content-Type: text/plain" $ do
+      get "/foo" `shouldHaveHeader` (hContentType, "text/plain")

@@ -1,10 +1,12 @@
 module Test.Hspec.Wai.Matcher where
 
+
 import           Control.Monad
 import           Data.Monoid
 import           Data.Functor
 import           Data.String
 import           Data.Text.Lazy.Encoding (encodeUtf8)
+import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy as LB
 import           Network.HTTP.Types
 import           Network.Wai.Test
@@ -40,3 +42,14 @@ match (SResponse (Status status _) _ body) (ResponseMatcher expectedStatus expec
       , "  expected: " ++ show expected
       , "  but got:  " ++ show actual
       ]
+
+haveHeader :: SResponse -> Header -> Maybe String
+haveHeader (SResponse _ headers _) (name, expected) = go $ lookup name headers
+  where
+    go Nothing = Just $ "header doesn't exist: " ++ show name
+    go (Just actual) = if actual == expected
+                         then Nothing
+                         else (Just . unlines) [ "header mismatch"
+                                               , "  expected: \"" ++ B.unpack expected ++ "\""
+                                               , "  but got:  \"" ++ B.unpack actual ++ "\""
+                                               ]
