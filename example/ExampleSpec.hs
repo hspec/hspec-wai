@@ -1,12 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
-
-module ExampleSpec (spec) where
+module ExampleSpec (main, spec) where
 
 import           Test.Hspec
 import           Test.Hspec.Wai
 
 import           Network.HTTP.Types (status200, hContentType)
-import           Network.Wai        (Application, responseLBS)
+import           Network.Wai (Application, responseLBS)
+
+main :: IO ()
+main = hspec spec
 
 app :: Application
 app _ = return $ responseLBS status200 [("Content-Type", "text/plain")] "hello"
