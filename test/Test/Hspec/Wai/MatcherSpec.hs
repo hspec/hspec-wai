@@ -14,9 +14,10 @@ main = hspec spec
 spec :: Spec
 spec = do
   describe "match" $ do
-    it "" $ do
-      SResponse status200 [] "" `match` 200
-        `shouldBe` Nothing
+    context "when both status and body do match" $ do
+      it "returns Nothing" $ do
+        SResponse status200 [] "" `match` 200
+          `shouldBe` Nothing
 
     context "when status does not match" $ do
       it "returns an error message" $ do
