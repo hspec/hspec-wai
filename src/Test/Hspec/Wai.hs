@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings, GeneralizedNewtypeDeriving, FlexibleInstances, TypeFamilies #-}
 module Test.Hspec.Wai (
-  get
+  with
+, get
 , post
 , put
 , request
@@ -22,6 +23,9 @@ import           Test.Hspec
 import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
 
+with :: IO a -> SpecWith a -> Spec
+with = before
+
 -- |
 -- Passes if the given `Header` exists in the response.
 shouldHaveHeader :: WaiSession SResponse -> Header -> WaiExpectation
@@ -42,6 +46,7 @@ shouldHaveHeader action header = do
 -- > get "/foo" `shouldRespondWith` "bar"                       -- Pass if the body is "bar"
 -- > get "/foo" `shouldRespondWith` "bar" { matchStatus = 200 } -- Pass if the body is "bar" and status is 200
 --
+
 shouldRespondWith :: WaiSession SResponse -> ResponseMatcher -> WaiExpectation
 shouldRespondWith action matcher = do
   r <- action

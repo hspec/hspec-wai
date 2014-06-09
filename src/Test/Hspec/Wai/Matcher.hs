@@ -1,4 +1,8 @@
-module Test.Hspec.Wai.Matcher where
+module Test.Hspec.Wai.Matcher (
+  ResponseMatcher(..)
+, match
+, haveHeader
+) where
 
 
 import           Control.Monad
