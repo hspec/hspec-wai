@@ -9,25 +9,15 @@ module Test.Hspec.Wai (
 , ResponseMatcher(..)
 ) where
 
-import           Control.Applicative
 import           Data.Foldable
-
-import           Test.Hspec
-
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
-
+import           Control.Monad.IO.Class
+import           Network.Wai (Request(..))
 import           Network.HTTP.Types
-
 import           Network.Wai.Test hiding (request)
 import qualified Network.Wai.Test as Wai
-
-import           Test.Hspec.Core (Example(..))
-import           Control.Monad.Trans.Reader
-import           Control.Monad.IO.Class
-import           Network.Wai (Application)
-
-import           Network.Wai (Request(..))
+import           Test.Hspec
 
 import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
