@@ -25,7 +25,7 @@ spec = before (run app) $ do
     it "reponds with 'hello'" $ do
       get "/foo" `shouldRespondWith` "hello"
 
-    it "reponds with 200 / 'bar'" $ do
+    it "reponds with 200 / 'hello'" $ do
       get "/foo" `shouldRespondWith` "hello" {matchStatus = 200}
 
     it "has Content-Type: text/plain" $ do
