@@ -24,8 +24,8 @@ library
     , text
     , transformers
     , http-types
-    , wai
-    , wai-test
+    , wai >= 3
+    , wai-extra >= 3
     , hspec2
 
 test-suite spec
@@ -44,7 +44,7 @@ test-suite spec
     , transformers
     , http-types
     , wai
-    , wai-test
+    , wai-extra
     , hspec2
 
     , hspec-meta

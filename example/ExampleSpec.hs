@@ -11,7 +11,7 @@ main :: IO ()
 main = hspec spec
 
 app :: Application
-app _ = return $ responseLBS status200 [("Content-Type", "text/plain")] "hello"
+app _ = ($ responseLBS status200 [("Content-Type", "text/plain")] "hello")
 
 run :: Application -> IO Application
 run = return
