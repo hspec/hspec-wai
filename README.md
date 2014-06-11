@@ -1,7 +1,8 @@
 hspec-wai [![Build Status](https://travis-ci.org/hspec/hspec-wai.svg?branch=master)](https://travis-ci.org/hspec/hspec-wai)
 ===========
 
-Helpers to test [WAI](http://www.yesodweb.com/book/web-application-interface) application with [Hspec](http://hspec.github.io/)
+Helpers to test [WAI](http://www.yesodweb.com/book/web-application-interface)
+applications with [Hspec](http://hspec.github.io/)
 
 ## Example
 
