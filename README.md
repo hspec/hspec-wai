@@ -6,25 +6,24 @@ applications with [Hspec](http://hspec.github.io/)
 
 ## Example
 
-```haskell
+~~~ {.haskell}
 {-# LANGUAGE OverloadedStrings #-}
-
-module ExampleSpec (spec) where
+module Main (main) where
 
 import           Test.Hspec
 import           Test.Hspec.Wai
 
-import           Network.HTTP.Types (status200)
-import           Network.Wai        (Application, responseLBS)
+import           Network.HTTP.Types (status200, hContentType)
+import           Network.Wai (Application, responseLBS)
+
+main :: IO ()
+main = hspec spec
 
 app :: Application
-app _ = return $ responseLBS status200 [("Content-Type", "text/plain")] "hello"
-
-run :: Application -> IO Application
-run = return
+app _ = ($ responseLBS status200 [("Content-Type", "text/plain")] "hello")
 
 spec :: Spec
-spec = before (run app) $ do
+spec = before (return app) $ do
   describe "GET /foo" $ do
     it "reponds with 200" $ do
       get "/foo" `shouldRespondWith` 200
@@ -32,9 +31,12 @@ spec = before (run app) $ do
     it "reponds with 'hello'" $ do
       get "/foo" `shouldRespondWith` "hello"
 
-    it "reponds with 200 / 'bar'" $ do
+    it "reponds with 200 / 'hello'" $ do
       get "/foo" `shouldRespondWith` "hello" {matchStatus = 200}
-```
+
+    it "has Content-Type: text/plain" $ do
+      get "/foo" `shouldHaveHeader` (hContentType, "text/plain")
+~~~
 
 ## Contributing
 
