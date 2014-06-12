@@ -36,12 +36,12 @@ instance Num ResponseMatcher where
 
 match :: SResponse -> ResponseMatcher -> Maybe String
 match (SResponse (Status status _) headers body) (ResponseMatcher expectedStatus expectedHeaders expectedBody) = mconcat [
-    actualExpected "status mismatch" (show status) (show expectedStatus) <$ guard (status /= expectedStatus)
+    actualExpected "status mismatch:" (show status) (show expectedStatus) <$ guard (status /= expectedStatus)
   , checkHeaders headers expectedHeaders
   , expectedBody >>= matchBody_ body
   ]
   where
-    matchBody_ actual expected = actualExpected "body mismatch" actual_ expected_ <$ guard (actual /= expected)
+    matchBody_ actual expected = actualExpected "body mismatch:" actual_ expected_ <$ guard (actual /= expected)
       where
         (actual_, expected_) = case (safeToString $ LB.toStrict actual, safeToString $ LB.toStrict expected) of
           (Just x, Just y) -> (x, y)
@@ -59,8 +59,8 @@ checkHeaders actual expected = case filter (`notElem` actual) expected of
   [] -> Nothing
   missing ->
     let msg
-          | length missing == 1 = "missing header"
-          | otherwise = "missing headers"
+          | length missing == 1 = "missing header:"
+          | otherwise = "missing headers:"
     in Just $ unlines (msg : map (("  " ++) . formatHeader) missing)
 
 haveHeader :: SResponse -> Header -> Maybe String

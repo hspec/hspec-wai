@@ -23,7 +23,7 @@ spec = do
       it "returns an error message" $ do
         SResponse status404 [] "" `match` 200
           `shouldBe` (Just . unlines) [
-            "status mismatch"
+            "status mismatch:"
           , "  expected: 200"
           , "  but got:  404"
           ]
@@ -32,7 +32,7 @@ spec = do
       it "returns an error message" $ do
         SResponse status200 [] "foo" `match` "bar"
           `shouldBe` (Just . unlines) [
-            "body mismatch"
+            "body mismatch:"
           , "  expected: bar"
           , "  but got:  foo"
           ]
@@ -41,7 +41,7 @@ spec = do
         it "uses show for both bodies in the error message" $ do
           SResponse status200 [] "foo\nbar" `match` "bar"
             `shouldBe` (Just . unlines) [
-              "body mismatch"
+              "body mismatch:"
             , "  expected: \"bar\""
             , "  but got:  \"foo\\nbar\""
             ]
@@ -50,10 +50,10 @@ spec = do
       it "combines error messages" $ do
         SResponse status404 [] "foo" `match` "bar"
           `shouldBe` (Just . unlines) [
-            "status mismatch"
+            "status mismatch:"
           , "  expected: 200"
           , "  but got:  404"
-          , "body mismatch"
+          , "body mismatch:"
           , "  expected: bar"
           , "  but got:  foo"
           ]
@@ -63,7 +63,7 @@ spec = do
         it "returns an error message" $ do
           SResponse status200 [] "" `match` 200 {matchHeaders = [("Content-Type", "application/json")]}
             `shouldBe` (Just . unlines) [
-              "missing header"
+              "missing header:"
             , "  Content-Type: application/json"
             ]
 
@@ -73,7 +73,7 @@ spec = do
             let expectedHeaders = [("Content-Type", "application/json"), ("Content-Encoding", "chunked")]
             SResponse status200 [(hContentLength, "23")] "" `match` 200 {matchHeaders = expectedHeaders}
               `shouldBe` (Just . unlines) [
-                "missing headers"
+                "missing headers:"
               , "  Content-Type: application/json"
               , "  Content-Encoding: chunked"
               ]
