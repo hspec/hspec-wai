@@ -23,7 +23,7 @@ spec = do
       it "returns an error message" $ do
         SResponse status404 [] "" `match` 200
           `shouldBe` (Just . unlines) [
-            "status mismatch"
+            "status mismatch:"
           , "  expected: 200"
           , "  but got:  404"
           ]
@@ -32,22 +32,51 @@ spec = do
       it "returns an error message" $ do
         SResponse status200 [] "foo" `match` "bar"
           `shouldBe` (Just . unlines) [
-            "body mismatch"
-          , "  expected: \"bar\""
-          , "  but got:  \"foo\""
+            "body mismatch:"
+          , "  expected: bar"
+          , "  but got:  foo"
           ]
+
+      context "when one body contains unsafe characters" $ do
+        it "uses show for both bodies in the error message" $ do
+          SResponse status200 [] "foo\nbar" `match` "bar"
+            `shouldBe` (Just . unlines) [
+              "body mismatch:"
+            , "  expected: \"bar\""
+            , "  but got:  \"foo\\nbar\""
+            ]
 
     context "when both status and body do not match" $ do
       it "combines error messages" $ do
         SResponse status404 [] "foo" `match` "bar"
           `shouldBe` (Just . unlines) [
-            "status mismatch"
+            "status mismatch:"
           , "  expected: 200"
           , "  but got:  404"
-          , "body mismatch"
-          , "  expected: \"bar\""
-          , "  but got:  \"foo\""
+          , "body mismatch:"
+          , "  expected: bar"
+          , "  but got:  foo"
           ]
+
+    context "when matching headers" $ do
+      context "when header is missing" $ do
+        it "returns an error message" $ do
+          SResponse status200 [] "" `match` 200 {matchHeaders = [("Content-Type", "application/json")]}
+            `shouldBe` (Just . unlines) [
+              "missing header:"
+            , "  Content-Type: application/json"
+            ]
+
+      context "when multiple headers are missing" $ do
+        context "combines error messages" $ do
+          it "returns an error message" $ do
+            let expectedHeaders = [("Content-Type", "application/json"), ("Content-Encoding", "chunked")]
+            SResponse status200 [(hContentLength, "23")] "" `match` 200 {matchHeaders = expectedHeaders}
+              `shouldBe` (Just . unlines) [
+                "missing headers:"
+              , "  Content-Type: application/json"
+              , "  Content-Encoding: chunked"
+              ]
 
   describe "haveHeader" $ do
     context "if expected header exists in actual response" $ do

@@ -15,16 +15,19 @@ import qualified Data.ByteString.Lazy as LB
 import           Network.HTTP.Types
 import           Network.Wai.Test
 
+import           Test.Hspec.Wai.Util
+
 data ResponseMatcher = ResponseMatcher {
   matchStatus :: Int
+, matchHeaders :: [Header]
 , matchBody :: Maybe LB.ByteString
 }
 
 instance IsString ResponseMatcher where
-  fromString s = ResponseMatcher 200 (Just . encodeUtf8 . fromString $ s)
+  fromString s = ResponseMatcher 200 [] (Just . encodeUtf8 . fromString $ s)
 
 instance Num ResponseMatcher where
-  fromInteger n = ResponseMatcher (fromInteger n) Nothing
+  fromInteger n = ResponseMatcher (fromInteger n) [] Nothing
   (+) =    error "ResponseMatcher does not support (+)"
   (-) =    error "ResponseMatcher does not support (-)"
   (*) =    error "ResponseMatcher does not support (*)"
@@ -32,20 +35,33 @@ instance Num ResponseMatcher where
   signum = error "ResponseMatcher does not support `signum`"
 
 match :: SResponse -> ResponseMatcher -> Maybe String
-match (SResponse (Status status _) _ body) (ResponseMatcher expectedStatus expectedBody) = mconcat [
-    match_ "status mismatch" status expectedStatus
-  , expectedBody >>= match_ "body mismatch" body
+match (SResponse (Status status _) headers body) (ResponseMatcher expectedStatus expectedHeaders expectedBody) = mconcat [
+    actualExpected "status mismatch:" (show status) (show expectedStatus) <$ guard (status /= expectedStatus)
+  , checkHeaders headers expectedHeaders
+  , expectedBody >>= matchBody_ body
   ]
   where
-    match_ :: (Show a, Eq a) => String -> a -> a -> Maybe String
-    match_ message actual expected = actualExpected message actual expected <$ guard (actual /= expected)
+    matchBody_ actual expected = actualExpected "body mismatch:" actual_ expected_ <$ guard (actual /= expected)
+      where
+        (actual_, expected_) = case (safeToString $ LB.toStrict actual, safeToString $ LB.toStrict expected) of
+          (Just x, Just y) -> (x, y)
+          _ -> (show actual, show expected)
 
-    actualExpected :: Show a => String -> a -> a -> String
+    actualExpected :: String -> String -> String -> String
     actualExpected message actual expected = unlines [
         message
-      , "  expected: " ++ show expected
-      , "  but got:  " ++ show actual
+      , "  expected: " ++ expected
+      , "  but got:  " ++ actual
       ]
+
+checkHeaders :: [Header] -> [Header] -> Maybe String
+checkHeaders actual expected = case filter (`notElem` actual) expected of
+  [] -> Nothing
+  missing ->
+    let msg
+          | length missing == 1 = "missing header:"
+          | otherwise = "missing headers:"
+    in Just $ unlines (msg : map (("  " ++) . formatHeader) missing)
 
 haveHeader :: SResponse -> Header -> Maybe String
 haveHeader (SResponse _ headers _) (name, expected) = go $ lookup name headers
