@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, GeneralizedNewtypeDeriving, FlexibleInstances, TypeFamilies #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Test.Hspec.Wai (
   with
 , get
