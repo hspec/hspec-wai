@@ -5,7 +5,6 @@ module Test.Hspec.Wai (
 , post
 , put
 , request
-, shouldHaveHeader
 , shouldRespondWith
 , ResponseMatcher(..)
 ) where
@@ -25,13 +24,6 @@ import           Test.Hspec.Wai.Matcher
 
 with :: IO a -> SpecWith a -> Spec
 with = before
-
--- |
--- Passes if the given `Header` exists in the response.
-shouldHaveHeader :: WaiSession SResponse -> Header -> WaiExpectation
-shouldHaveHeader action header = do
-  r <- action
-  forM_ (haveHeader r header) (liftIO . expectationFailure)
 
 -- |
 -- Passs if

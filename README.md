@@ -35,7 +35,7 @@ spec = before (return app) $ do
       get "/foo" `shouldRespondWith` "hello" {matchStatus = 200}
 
     it "has Content-Type: text/plain" $ do
-      get "/foo" `shouldHaveHeader` (hContentType, "text/plain")
+      get "/foo" `shouldRespondWith` 200 {matchHeaders = [(hContentType, "text/plain")]}
 ~~~
 
 ## Contributing

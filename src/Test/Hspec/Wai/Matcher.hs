@@ -1,7 +1,6 @@
 module Test.Hspec.Wai.Matcher (
   ResponseMatcher(..)
 , match
-, haveHeader
 ) where
 
 
@@ -10,7 +9,6 @@ import           Data.Monoid
 import           Data.Functor
 import           Data.String
 import           Data.Text.Lazy.Encoding (encodeUtf8)
-import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy as LB
 import           Network.HTTP.Types
 import           Network.Wai.Test
@@ -64,14 +62,3 @@ checkHeaders actual expected = case filter (`notElem` actual) expected of
     in Just $ unlines (msg : formatHeaders missing ++ "the actual headers were:" : formatHeaders actual)
   where
     formatHeaders = map (("  " ++) . formatHeader)
-
-haveHeader :: SResponse -> Header -> Maybe String
-haveHeader (SResponse _ headers _) (name, expected) = go $ lookup name headers
-  where
-    go Nothing = Just $ "header doesn't exist: " ++ show name
-    go (Just actual) = if actual == expected
-                         then Nothing
-                         else (Just . unlines) [ "header mismatch"
-                                               , "  expected: \"" ++ B.unpack expected ++ "\""
-                                               , "  but got:  \"" ++ B.unpack actual ++ "\""
-                                               ]
