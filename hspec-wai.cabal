@@ -23,14 +23,16 @@ library
       src
   exposed-modules:
       Test.Hspec.Wai
-    , Test.Hspec.Wai.Internal
+      Test.Hspec.Wai.Internal
   other-modules:
+      Test.Hspec.Wai.Util
       Test.Hspec.Wai.Matcher
   build-depends:
       base == 4.*
     , bytestring
     , text
     , transformers
+    , case-insensitive
     , http-types
     , wai >= 3
     , wai-extra >= 3
@@ -50,6 +52,7 @@ test-suite spec
     , bytestring
     , text
     , transformers
+    , case-insensitive
     , http-types
     , wai
     , wai-extra

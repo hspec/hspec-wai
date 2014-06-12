@@ -49,6 +49,26 @@ spec = do
           , "  but got:  \"foo\""
           ]
 
+    context "when matching headers" $ do
+      context "when header is missing" $ do
+        it "returns an error message" $ do
+          SResponse status200 [] "" `match` 200 {matchHeaders = [("Content-Type", "application/json")]}
+            `shouldBe` (Just . unlines) [
+              "missing header"
+            , "  Content-Type: application/json"
+            ]
+
+      context "when multiple headers are missing" $ do
+        context "combines error messages" $ do
+          it "returns an error message" $ do
+            let expectedHeaders = [("Content-Type", "application/json"), ("Content-Encoding", "chunked")]
+            SResponse status200 [(hContentLength, "23")] "" `match` 200 {matchHeaders = expectedHeaders}
+              `shouldBe` (Just . unlines) [
+                "missing headers"
+              , "  Content-Type: application/json"
+              , "  Content-Encoding: chunked"
+              ]
+
   describe "haveHeader" $ do
     context "if expected header exists in actual response" $ do
       it "should be ok" $ do

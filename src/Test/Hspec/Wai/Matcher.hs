@@ -15,16 +15,19 @@ import qualified Data.ByteString.Lazy as LB
 import           Network.HTTP.Types
 import           Network.Wai.Test
 
+import           Test.Hspec.Wai.Util
+
 data ResponseMatcher = ResponseMatcher {
   matchStatus :: Int
+, matchHeaders :: [Header]
 , matchBody :: Maybe LB.ByteString
 }
 
 instance IsString ResponseMatcher where
-  fromString s = ResponseMatcher 200 (Just . encodeUtf8 . fromString $ s)
+  fromString s = ResponseMatcher 200 [] (Just . encodeUtf8 . fromString $ s)
 
 instance Num ResponseMatcher where
-  fromInteger n = ResponseMatcher (fromInteger n) Nothing
+  fromInteger n = ResponseMatcher (fromInteger n) [] Nothing
   (+) =    error "ResponseMatcher does not support (+)"
   (-) =    error "ResponseMatcher does not support (-)"
   (*) =    error "ResponseMatcher does not support (*)"
@@ -32,8 +35,9 @@ instance Num ResponseMatcher where
   signum = error "ResponseMatcher does not support `signum`"
 
 match :: SResponse -> ResponseMatcher -> Maybe String
-match (SResponse (Status status _) _ body) (ResponseMatcher expectedStatus expectedBody) = mconcat [
+match (SResponse (Status status _) headers body) (ResponseMatcher expectedStatus expectedHeaders expectedBody) = mconcat [
     match_ "status mismatch" status expectedStatus
+  , checkHeaders headers expectedHeaders
   , expectedBody >>= match_ "body mismatch" body
   ]
   where
@@ -46,6 +50,15 @@ match (SResponse (Status status _) _ body) (ResponseMatcher expectedStatus expec
       , "  expected: " ++ show expected
       , "  but got:  " ++ show actual
       ]
+
+checkHeaders :: [Header] -> [Header] -> Maybe String
+checkHeaders actual expected = case filter (`notElem` actual) expected of
+  [] -> Nothing
+  missing ->
+    let msg
+          | length missing == 1 = "missing header"
+          | otherwise = "missing headers"
+    in Just $ unlines (msg : map (("  " ++) . formatHeader) missing)
 
 haveHeader :: SResponse -> Header -> Maybe String
 haveHeader (SResponse _ headers _) (name, expected) = go $ lookup name headers
