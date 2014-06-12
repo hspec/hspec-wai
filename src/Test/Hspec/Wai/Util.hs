@@ -19,5 +19,5 @@ safeToString bs = do
   str <- either (const Nothing) (Just . T.unpack) (T.decodeUtf8' bs)
   let isSafe = not $ case str of
         [] -> True
-        _  -> isSpace (head str) || isSpace (last str) || any (not . isPrint) str
+        _  -> isSpace (last str) || any (not . isPrint) str
   guard isSafe >> return str

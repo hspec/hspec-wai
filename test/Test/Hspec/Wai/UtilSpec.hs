@@ -20,11 +20,6 @@ spec = do
       let header = ("Content-Type", "application/json")
       formatHeader header `shouldBe` "Content-Type: application/json"
 
-    describe "when starts with whitespace" $ do
-      it "uses show" $ do
-        let header = ("  Content-Type", "application/json")
-        formatHeader header `shouldBe` show header
-
     describe "when ends with whitespace" $ do
       it "uses show" $ do
         let header = ("Content-Type", "application/json  ")
