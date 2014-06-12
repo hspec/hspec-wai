@@ -44,22 +44,18 @@ shouldRespondWith action matcher = do
   r <- action
   forM_ (match r matcher) (liftIO . expectationFailure)
 
--- |
 -- | Performs `GET` request to running app.
 get :: ByteString -> WaiSession SResponse
 get p = request methodGet p ""
 
--- |
 -- | Performs `POST` request to running app.
 post :: ByteString -> LB.ByteString -> WaiSession SResponse
 post = request methodPost
 
--- |
 -- | Performs `PUT` request to running app.
 put :: ByteString -> LB.ByteString -> WaiSession SResponse
 put = request methodPut
 
--- |
 -- | Performs request to running app, with HTTP Method, path and body.
 request :: Method -> ByteString -> LB.ByteString -> WaiSession SResponse
 request m p b = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req b)
