@@ -10,6 +10,11 @@ main = hspec spec
 
 spec :: Spec
 spec = do
+  describe "safeToString" $ do
+    context "when used on an empty string" $ do
+      it "returns Nothing" $ do
+        safeToString "" `shouldBe` Nothing
+
   describe "formatHeader" $ do
     it "formats header" $ do
       let header = ("Content-Type", "application/json")

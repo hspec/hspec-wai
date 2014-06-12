@@ -33,9 +33,18 @@ spec = do
         SResponse status200 [] "foo" `match` "bar"
           `shouldBe` (Just . unlines) [
             "body mismatch"
-          , "  expected: \"bar\""
-          , "  but got:  \"foo\""
+          , "  expected: bar"
+          , "  but got:  foo"
           ]
+
+      context "when one body contains unsafe characters" $ do
+        it "uses show for both bodies in the error message" $ do
+          SResponse status200 [] "foo\nbar" `match` "bar"
+            `shouldBe` (Just . unlines) [
+              "body mismatch"
+            , "  expected: \"bar\""
+            , "  but got:  \"foo\\nbar\""
+            ]
 
     context "when both status and body do not match" $ do
       it "combines error messages" $ do
@@ -45,8 +54,8 @@ spec = do
           , "  expected: 200"
           , "  but got:  404"
           , "body mismatch"
-          , "  expected: \"bar\""
-          , "  but got:  \"foo\""
+          , "  expected: bar"
+          , "  but got:  foo"
           ]
 
     context "when matching headers" $ do
