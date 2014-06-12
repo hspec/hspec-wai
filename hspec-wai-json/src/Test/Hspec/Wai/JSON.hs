@@ -21,10 +21,20 @@ import           Language.Haskell.TH.Quote
 
 -- | A `QuasiQuoter` for constructing JSON values.
 --
--- The constructed value is polymorph and unifies to instances of `FromValue`
--- (either `ByteString` or `ResponseMatcher`).
+-- The constructed value is polymorph and unifies to instances of `FromValue`.
 --
--- Example
+-- When used as a `ResponseMatcher` it matches a response with
+--
+--  * a status code of @200@
+--
+--  * a @Content-Type@ header with value @application/json@
+--
+--  * the specified JSON as response body
+--
+-- When used as a @ByteString@ it creates a ByteString from the specified JSON
+-- that can be used as a request body for e.g. @POST@ and @PUT@ requests.
+--
+-- Example:
 --
 -- >>> L.putStrLn [json|[23, {foo: 42}]|]
 -- [23,{"foo":42}]
