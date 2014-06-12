@@ -65,6 +65,7 @@ spec = do
             `shouldBe` (Just . unlines) [
               "missing header:"
             , "  Content-Type: application/json"
+            , "the actual headers were:"
             ]
 
       context "when multiple headers are missing" $ do
@@ -76,6 +77,8 @@ spec = do
                 "missing headers:"
               , "  Content-Type: application/json"
               , "  Content-Encoding: chunked"
+              , "the actual headers were:"
+              , "  Content-Length: 23"
               ]
 
   describe "haveHeader" $ do

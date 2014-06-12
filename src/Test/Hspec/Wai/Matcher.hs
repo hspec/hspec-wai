@@ -61,7 +61,9 @@ checkHeaders actual expected = case filter (`notElem` actual) expected of
     let msg
           | length missing == 1 = "missing header:"
           | otherwise = "missing headers:"
-    in Just $ unlines (msg : map (("  " ++) . formatHeader) missing)
+    in Just $ unlines (msg : formatHeaders missing ++ "the actual headers were:" : formatHeaders actual)
+  where
+    formatHeaders = map (("  " ++) . formatHeader)
 
 haveHeader :: SResponse -> Header -> Maybe String
 haveHeader (SResponse _ headers _) (name, expected) = go $ lookup name headers
