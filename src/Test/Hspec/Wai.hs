@@ -46,7 +46,7 @@ shouldRespondWith action matcher = do
 
 -- | Performs `GET` request to running app.
 get :: ByteString -> WaiSession SResponse
-get p = request methodGet p ""
+get path = request methodGet path ""
 
 -- | Performs `POST` request to running app.
 post :: ByteString -> LB.ByteString -> WaiSession SResponse
@@ -58,6 +58,6 @@ put = request methodPut
 
 -- | Performs request to running app, with HTTP Method, path and body.
 request :: Method -> ByteString -> LB.ByteString -> WaiSession SResponse
-request m p b = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req b)
+request method path body = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req body)
   where
-    req = setPath defaultRequest {requestMethod = m} p
+    req = setPath defaultRequest {requestMethod = method} path
