@@ -24,6 +24,7 @@ library
   exposed-modules:
       Test.Hspec.Wai
       Test.Hspec.Wai.Internal
+      Test.Hspec.Wai.JSON
   other-modules:
       Test.Hspec.Wai.Util
       Test.Hspec.Wai.Matcher
@@ -37,6 +38,9 @@ library
     , wai >= 3
     , wai-extra >= 3
     , hspec2
+    , template-haskell
+    , aeson
+    , aeson-qq >= 0.7
 
 test-suite spec
   type:
@@ -59,3 +63,33 @@ test-suite spec
     , hspec2
 
     , hspec-meta
+
+test-suite doctests
+  main-is:
+      doctests.hs
+  type:
+      exitcode-stdio-1.0
+  ghc-options:
+      -Wall -Werror -threaded
+  hs-source-dirs:
+      test
+  build-depends:
+      base    == 4.*
+    , doctest >= 0.9.4.1
+
+test-suite README
+  type:
+      exitcode-stdio-1.0
+  ghc-options:
+      -Wall -Werror -pgmL markdown-unlit
+  main-is:
+      README.lhs
+  build-depends:
+      base == 4.*
+    , markdown-unlit
+    , hspec2
+    , hspec-wai
+    , http-types
+    , aeson
+    , wai
+    , scotty
