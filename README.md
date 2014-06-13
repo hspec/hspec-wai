@@ -7,35 +7,48 @@ applications with [Hspec](http://hspec.github.io/)
 ## Example
 
 ~~~ {.haskell}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, QuasiQuotes #-}
 module Main (main) where
 
 import           Test.Hspec
 import           Test.Hspec.Wai
+import           Test.Hspec.Wai.JSON
 
-import           Network.HTTP.Types (status200, hContentType)
-import           Network.Wai (Application, responseLBS)
+import           Network.HTTP.Types (hContentType)
+import           Network.Wai (Application)
+
+import           Data.Aeson (Value(..), object, (.=))
+import qualified Web.Scotty as S
 
 main :: IO ()
 main = hspec spec
 
-app :: Application
-app _ = ($ responseLBS status200 [("Content-Type", "text/plain")] "hello")
+app :: IO Application
+app = S.scottyApp $ do
+  S.get "/" $ do
+    S.text "hello"
+
+  S.get "/some-json" $ do
+    S.json $ object ["foo" .= Number 23, "bar" .= Number 42]
 
 spec :: Spec
-spec = before (return app) $ do
-  describe "GET /foo" $ do
+spec = with app $ do
+  describe "GET /" $ do
     it "reponds with 200" $ do
-      get "/foo" `shouldRespondWith` 200
+      get "/" `shouldRespondWith` 200
 
     it "reponds with 'hello'" $ do
-      get "/foo" `shouldRespondWith` "hello"
+      get "/" `shouldRespondWith` "hello"
 
     it "reponds with 200 / 'hello'" $ do
-      get "/foo" `shouldRespondWith` "hello" {matchStatus = 200}
+      get "/" `shouldRespondWith` "hello" {matchStatus = 200}
 
     it "has Content-Type: text/plain" $ do
-      get "/foo" `shouldRespondWith` 200 {matchHeaders = [(hContentType, "text/plain")]}
+      get "/" `shouldRespondWith` 200 {matchHeaders = [(hContentType, "text/plain")]}
+
+  describe "GET /some-json" $ do
+    it "reponds with some JSON" $ do
+      get "/some-json" `shouldRespondWith` [json|{foo: 23, bar: 42}|]
 ~~~
 
 ## Contributing

@@ -1,10 +1,10 @@
-{-# LANGUAGE FlexibleInstances          #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE TypeFamilies               #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeFamilies #-}
 module Test.Hspec.Wai.Internal (
   WaiExpectation
-, WaiSession
+, WaiSession(..)
 , runWaiSession
 , getApp
 ) where
@@ -12,13 +12,18 @@ module Test.Hspec.Wai.Internal (
 import           Control.Applicative
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Reader
-import           Network.Wai                (Application)
-import           Network.Wai.Test           hiding (request)
+import           Network.Wai (Application)
+import           Network.Wai.Test hiding (request)
 import           Test.Hspec
-import           Test.Hspec.Core            (Example (..))
+import           Test.Hspec.Core (Example (..))
 
+-- | An expectation in the `WaiSession` monad.  Failing expectations are
+-- communicated through exceptions (similar to `Expectation` and
+-- `Test.HUnit.Base.Assertion`).
 type WaiExpectation = WaiSession ()
 
+-- | A <http://www.yesodweb.com/book/web-application-interface WAI> test
+-- session that carries the `Application` under test an some client state.
 newtype WaiSession a = WaiSession {unWaiSession :: Session a}
   deriving (Functor, Applicative, Monad, MonadIO)
 
