@@ -16,13 +16,23 @@ module Test.Hspec.Wai (
 , shouldRespondWith
 , ResponseMatcher(..)
 
+-- * Matching on the response with predicates
+, responseSatisfies
+, statusSatisfies
+, headersSatisfy
+, bodySatisfies
+, jsonBodySatisfies
+
 -- * Helpers
 , with
 ) where
 
+import           Data.Aeson (decode, FromJSON)
 import           Data.Foldable
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
+import           Control.Applicative ((<$>))
+import           Control.Monad (when)
 import           Control.Monad.IO.Class
 import           Network.Wai (Request(..))
 import           Network.HTTP.Types
@@ -76,6 +86,76 @@ shouldRespondWith action matcher = do
   r <- action
   forM_ (match r matcher) (liftIO . expectationFailure)
 
+-- | Check that the response satisfies the given predicate
+responseSatisfies :: WaiSession SResponse
+                  -> (SResponse -> Bool)
+                  -> WaiExpectation
+responseSatisfies action predicate = do
+  resp <- action
+  when (not $ predicate resp) $
+    reportFailure $
+      "expected the following response to match the predicate:\n"
+        ++ show resp
+        ++ "\nbut it didn't"
+
+-- | Check that the body of the response satisfies the given predicate
+bodySatisfies :: WaiSession SResponse 
+              -> (LB.ByteString -> Bool)
+              -> WaiExpectation
+bodySatisfies action predicate = do
+  body <- simpleBody <$> action
+  when (not $ predicate body) $ 
+    reportFailure
+      "expected the body to match the predicate\nbut it didn't."
+
+-- | Check that the 'Status' of the response satisfies the given predicate
+statusSatisfies :: WaiSession SResponse
+                -> (Status -> Bool)
+                -> WaiExpectation
+statusSatisfies action predicate = do
+  status <- simpleStatus <$> action
+  when (not $ predicate status) $ 
+    reportFailure $
+      "expected this status to match the predicate: " ++ show status
+        ++ "\nbut it didn't" 
+
+-- | Check that the 'Header's sastify the given predicate
+headersSatisfy :: WaiSession SResponse
+               -> ([Header] -> Bool)
+               -> WaiExpectation
+headersSatisfy action predicate = do
+  headers <- simpleHeaders <$> action
+  when (not $ predicate headers) $ 
+    reportFailure $
+      "expected these headers to match the predicate: " ++ show headers
+        ++ "\nbut they didn't"
+
+-- | Check that:
+-- 
+-- * the (JSON) body can successfully be decoded to the target type
+-- * the value obtained that way matches the given predicate
+jsonBodySatisfies :: (Show a, FromJSON a)
+                  => WaiSession SResponse
+                  -> (a -> Bool)
+                  -> WaiExpectation
+jsonBodySatisfies action predicate = do
+  jsonBody <- simpleBody <$> action
+  maybe (reportNothing jsonBody)
+        (\value -> when (predicate value) $
+                    reportPredicateFailure value
+        )
+        (decode jsonBody)
+
+  where reportNothing body = reportFailure $ 
+          "expected a valid JSON from this body:\n"
+            ++ show body
+            ++ "\nbut couldn't decode to the appropriate type"
+
+        reportPredicateFailure value = reportFailure $ 
+          "expected the predicate to succeed on: " 
+            ++ show value
+            ++ "\nbut it returned False"
+
 -- | Perform a @GET@ request to the application under test.
 get :: ByteString -> WaiSession SResponse
 get path = request methodGet path ""
@@ -94,3 +174,7 @@ request :: Method -> ByteString -> LB.ByteString -> WaiSession SResponse
 request method path body = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req body)
   where
     req = setPath defaultRequest {requestMethod = method} path
+
+-- | Report a failure in hspec terms
+reportFailure :: String -> WaiSession ()
+reportFailure = liftIO . expectationFailure
