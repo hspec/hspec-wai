@@ -18,7 +18,7 @@ import           Test.Hspec
 import           Test.Hspec.Core (Example (..))
 
 -- | An expectation in the `WaiSession` monad.  Failing expectations are
--- comunicatied through exceptions (similar to `Expectation` and
+-- communicated through exceptions (similar to `Expectation` and
 -- `Test.HUnit.Base.Assertion`).
 type WaiExpectation = WaiSession ()
 
