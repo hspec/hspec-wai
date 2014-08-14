@@ -10,6 +10,8 @@ module Test.Hspec.Wai (
 , get
 , post
 , put
+, patch
+, delete
 , request
 
 -- * Matching on the response
@@ -88,6 +90,14 @@ post = request methodPost
 -- | Perform a @PUT@ request to the application under test.
 put :: ByteString -> LB.ByteString -> WaiSession SResponse
 put = request methodPut
+
+-- | Perform a @PATCH@ request to the application under test.
+patch :: ByteString -> LB.ByteString -> WaiSession SResponse
+patch = request methodPatch
+
+-- | Perform a @DELETE@ request to the application under test.
+delete :: ByteString -> WaiSession SResponse
+delete path = request methodDelete path ""
 
 -- | Perform a request to the application under test, with specified HTTP
 -- method, request path and body.
