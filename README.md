@@ -15,9 +15,8 @@ import           Test.Hspec.Wai
 import           Test.Hspec.Wai.JSON
 
 import           Network.Wai (Application)
-
-import           Data.Aeson (Value(..), object, (.=))
 import qualified Web.Scotty as S
+import           Data.Aeson (Value(..), object, (.=))
 
 main :: IO ()
 main = hspec spec
