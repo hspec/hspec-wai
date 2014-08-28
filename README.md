@@ -27,9 +27,11 @@ app :: IO Application
 app = S.scottyApp $ do
   S.get "/" $ do
     S.text "hello"
+    S.setHeader "Content-Type" "text/plain"
 
   S.get "/some-json" $ do
     S.json $ object ["foo" .= Number 23, "bar" .= Number 42]
+    S.setHeader "Content-Type" "application/json"
 
 spec :: Spec
 spec = with app $ do
