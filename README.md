@@ -14,7 +14,6 @@ import           Test.Hspec
 import           Test.Hspec.Wai
 import           Test.Hspec.Wai.JSON
 
-import           Network.HTTP.Types (hContentType)
 import           Network.Wai (Application)
 
 import           Data.Aeson (Value(..), object, (.=))
@@ -46,7 +45,7 @@ spec = with app $ do
       get "/" `shouldRespondWith` "hello" {matchStatus = 200}
 
     it "has Content-Type: text/plain" $ do
-      get "/" `shouldRespondWith` 200 {matchHeaders = [(hContentType, "text/plain")]}
+      get "/" `shouldRespondWith` 200 {matchHeaders = [("Content-Type", "text/plain")]}
 
   describe "GET /some-json" $ do
     it "responds with some JSON" $ do

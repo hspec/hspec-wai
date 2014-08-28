@@ -89,7 +89,6 @@ test-suite README
     , markdown-unlit
     , hspec2
     , hspec-wai
-    , http-types
     , aeson
     , wai
     , scotty
