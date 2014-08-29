@@ -64,19 +64,6 @@ test-suite spec
 
     , hspec-meta
 
-test-suite doctests
-  main-is:
-      doctests.hs
-  type:
-      exitcode-stdio-1.0
-  ghc-options:
-      -Wall -Werror -threaded
-  hs-source-dirs:
-      test
-  build-depends:
-      base    == 4.*
-    , doctest >= 0.9.4.1
-
 test-suite README
   type:
       exitcode-stdio-1.0
