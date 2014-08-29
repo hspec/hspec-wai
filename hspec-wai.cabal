@@ -46,7 +46,7 @@ test-suite spec
   type:
       exitcode-stdio-1.0
   ghc-options:
-      -Wall -Werror
+      -Wall
   hs-source-dirs:
       src, test
   main-is:
@@ -81,7 +81,7 @@ test-suite README
   type:
       exitcode-stdio-1.0
   ghc-options:
-      -Wall -Werror -pgmL markdown-unlit
+      -Wall -pgmL markdown-unlit
   main-is:
       README.lhs
   build-depends:
