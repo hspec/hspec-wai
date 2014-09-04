@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Hspec.Wai.MatcherSpec (main, spec) where
 
-import           Test.Hspec.Meta
+import           Test.Hspec
+import           Test.Hspec.Wai
 
 import           Network.HTTP.Types
 import           Network.Wai.Test

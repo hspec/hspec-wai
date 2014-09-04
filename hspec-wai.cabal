@@ -62,8 +62,6 @@ test-suite spec
     , wai-extra
     , hspec2
 
-    , hspec-meta
-
 test-suite README
   type:
       exitcode-stdio-1.0

@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Hspec.Wai.UtilSpec (main, spec) where
 
-import           Test.Hspec.Meta
-
+import           Test.Hspec
 import           Test.Hspec.Wai.Util
 
 main :: IO ()
