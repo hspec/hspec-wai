@@ -58,8 +58,8 @@ test-suite spec
     , transformers
     , case-insensitive
     , http-types
-    , wai >= 3
-    , wai-extra >= 3
+    , wai
+    , wai-extra
     , hspec2
 
 test-suite README
