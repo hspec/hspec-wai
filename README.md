@@ -51,6 +51,10 @@ spec = with app $ do
       get "/some-json" `shouldRespondWith` [json|{foo: 23, bar: 42}|]
 ~~~
 
+## Documentation
+
+See hspec-wai on hackage: https://hackage.haskell.org/package/hspec-wai
+
 ## Contributing
 
 1. Fork it
