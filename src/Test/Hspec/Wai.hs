@@ -81,27 +81,27 @@ shouldRespondWith action matcher = do
 
 -- | Perform a @GET@ request to the application under test.
 get :: ByteString -> WaiSession SResponse
-get path = request methodGet [] path ""
+get path = request methodGet path [] ""
 
 -- | Perform a @POST@ request to the application under test.
 post :: ByteString -> LB.ByteString -> WaiSession SResponse
-post = request methodPost []
+post path = request methodPost path []
 
 -- | Perform a @PUT@ request to the application under test.
 put :: ByteString -> LB.ByteString -> WaiSession SResponse
-put = request methodPut []
+put path = request methodPut path []
 
 -- | Perform a @PATCH@ request to the application under test.
 patch :: ByteString -> LB.ByteString -> WaiSession SResponse
-patch = request methodPatch []
+patch path = request methodPatch path []
 
 -- | Perform a @DELETE@ request to the application under test.
 delete :: ByteString -> WaiSession SResponse
-delete path = request methodDelete [] path ""
+delete path = request methodDelete path [] ""
 
 -- | Perform a request to the application under test, with specified HTTP
 -- method, request path, headers and body.
-request :: Method -> [Header] -> ByteString -> LB.ByteString -> WaiSession SResponse
-request method headers path body = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req body)
+request :: Method -> ByteString -> [Header] -> LB.ByteString -> WaiSession SResponse
+request method path headers body = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req body)
  where
    req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path

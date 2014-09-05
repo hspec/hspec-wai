@@ -43,7 +43,7 @@ spec = do
       delete "/" `shouldRespondWith` 200
   describe "request" $ with (return $ expectRequest methodGet "/foo" body accept) $
     it "sends method, path, headers, and body" $
-      request methodGet accept "/foo" (BL.fromChunks [body]) `shouldRespondWith` 200
+      request methodGet "/foo" accept (BL.fromChunks [body]) `shouldRespondWith` 200
 
   where
     accept = [(hAccept, "application/json")]
