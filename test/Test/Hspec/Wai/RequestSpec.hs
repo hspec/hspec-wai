@@ -32,15 +32,19 @@ spec = do
   describe "get" $ with (return $ expectMethod methodGet) $
     it "sends a get request" $
       get "/" `shouldRespondWith` 200
+
   describe "post" $ with (return $ expectMethod methodPost) $
     it "sends a post request" $
       post "/" "" `shouldRespondWith` 200
+
   describe "put" $ with (return $ expectMethod methodPut) $
     it "sends a put request" $
       put "/" "" `shouldRespondWith` 200
+
   describe "delete" $ with (return $ expectMethod methodDelete) $
     it "sends a delete request" $
       delete "/" `shouldRespondWith` 200
+
   describe "request" $ with (return $ expectRequest methodGet "/foo" body accept) $
     it "sends method, path, headers, and body" $
       request methodGet "/foo" accept (BL.fromChunks [body]) `shouldRespondWith` 200
