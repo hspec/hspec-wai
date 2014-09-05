@@ -103,5 +103,5 @@ delete path = request methodDelete path [] ""
 -- method, request path, headers and body.
 request :: Method -> ByteString -> [Header] -> LB.ByteString -> WaiSession SResponse
 request method path headers body = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req body)
- where
-   req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path
+  where
+    req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path
