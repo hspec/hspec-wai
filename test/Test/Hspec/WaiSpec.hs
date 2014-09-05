@@ -1,14 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Test.Hspec.Wai.RequestSpec (main, spec) where
+module Test.Hspec.WaiSpec (main, spec) where
 
 import Test.Hspec
-import Test.Hspec.Wai
-
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as BL
-
 import Network.HTTP.Types
 import Network.Wai
+
+import Test.Hspec.Wai
 
 main :: IO ()
 main = hspec spec
