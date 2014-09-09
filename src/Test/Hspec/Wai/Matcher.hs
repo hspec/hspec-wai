@@ -1,3 +1,4 @@
+{-# LANGUAGE ViewPatterns #-}
 module Test.Hspec.Wai.Matcher (
   ResponseMatcher(..)
 , match
@@ -39,9 +40,9 @@ match (SResponse (Status status _) headers body) (ResponseMatcher expectedStatus
   , expectedBody >>= matchBody_ body
   ]
   where
-    matchBody_ actual expected = actualExpected "body mismatch:" actual_ expected_ <$ guard (actual /= expected)
+    matchBody_ (toStrict -> actual) (toStrict -> expected) = actualExpected "body mismatch:" actual_ expected_ <$ guard (actual /= expected)
       where
-        (actual_, expected_) = case (safeToString $ LB.toStrict actual, safeToString $ LB.toStrict expected) of
+        (actual_, expected_) = case (safeToString actual, safeToString expected) of
           (Just x, Just y) -> (x, y)
           _ -> (show actual, show expected)
 

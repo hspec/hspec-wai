@@ -2,10 +2,12 @@
 module Test.Hspec.Wai.Util where
 
 import           Control.Monad
+import           Data.Monoid
 import           Data.Maybe
 import           Data.Char
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString.Lazy as LB
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.CaseInsensitive as CI
@@ -21,3 +23,7 @@ safeToString bs = do
         [] -> True
         _  -> isSpace (last str) || any (not . isPrint) str
   guard isSafe >> return str
+
+-- for compatibility with older versions of `bytestring`
+toStrict :: LB.ByteString -> ByteString
+toStrict = mconcat . LB.toChunks
