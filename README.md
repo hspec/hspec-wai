@@ -44,7 +44,7 @@ spec = with app $ do
       get "/" `shouldRespondWith` "hello" {matchStatus = 200}
 
     it "has Content-Type: text/plain" $ do
-      get "/" `shouldRespondWith` 200 {matchHeaders = [("Content-Type", "text/plain")]}
+      get "/" `shouldRespondWith` 200 {matchHeaders = ["Content-Type" <:> "text/plain"]}
 
   describe "GET /some-json" $ do
     it "responds with some JSON" $ do

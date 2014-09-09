@@ -61,7 +61,7 @@ spec = do
     context "when matching headers" $ do
       context "when header is missing" $ do
         it "returns an error message" $ do
-          SResponse status200 [] "" `match` 200 {matchHeaders = [("Content-Type", "application/json")]}
+          SResponse status200 [] "" `match` 200 {matchHeaders = ["Content-Type" <:> "application/json"]}
             `shouldBe` (Just . unlines) [
               "missing header:"
             , "  Content-Type: application/json"
@@ -69,14 +69,14 @@ spec = do
             ]
 
       context "when multiple headers are missing" $ do
-        context "combines error messages" $ do
-          it "returns an error message" $ do
-            let expectedHeaders = [("Content-Type", "application/json"), ("Content-Encoding", "chunked")]
-            SResponse status200 [(hContentLength, "23")] "" `match` 200 {matchHeaders = expectedHeaders}
-              `shouldBe` (Just . unlines) [
-                "missing headers:"
-              , "  Content-Type: application/json"
-              , "  Content-Encoding: chunked"
-              , "the actual headers were:"
-              , "  Content-Length: 23"
-              ]
+        it  "combines error messages" $ do
+          let expectedHeaders = ["Content-Type" <:> "application/json", "Content-Encoding" <:> "chunked"]
+          SResponse status200 [(hContentLength, "23")] "" `match` 200 {matchHeaders = expectedHeaders}
+            `shouldBe` (Just . unlines) [
+              "missing header:"
+            , "  Content-Type: application/json"
+            , "missing header:"
+            , "  Content-Encoding: chunked"
+            , "the actual headers were:"
+            , "  Content-Length: 23"
+            ]

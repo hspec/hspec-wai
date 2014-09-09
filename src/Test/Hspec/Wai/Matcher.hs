@@ -1,15 +1,18 @@
 {-# LANGUAGE ViewPatterns #-}
 module Test.Hspec.Wai.Matcher (
   ResponseMatcher(..)
+, MatchHeader(..)
+, (<:>)
 , match
 ) where
 
-
+import           Control.Applicative
 import           Control.Monad
+import           Data.Maybe
 import           Data.Monoid
-import           Data.Functor
 import           Data.String
 import           Data.Text.Lazy.Encoding (encodeUtf8)
+import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
 import           Network.HTTP.Types
 import           Network.Wai.Test
@@ -18,9 +21,11 @@ import           Test.Hspec.Wai.Util
 
 data ResponseMatcher = ResponseMatcher {
   matchStatus :: Int
-, matchHeaders :: [Header]
+, matchHeaders :: [MatchHeader]
 , matchBody :: Maybe LB.ByteString
 }
+
+data MatchHeader = MatchHeader ([Header] -> Maybe String)
 
 instance IsString ResponseMatcher where
   fromString s = ResponseMatcher 200 [] (Just . encodeUtf8 . fromString $ s)
@@ -53,13 +58,17 @@ match (SResponse (Status status _) headers body) (ResponseMatcher expectedStatus
       , "  but got:  " ++ actual
       ]
 
-checkHeaders :: [Header] -> [Header] -> Maybe String
-checkHeaders actual expected = case filter (`notElem` actual) expected of
-  [] -> Nothing
-  missing ->
-    let msg
-          | length missing == 1 = "missing header:"
-          | otherwise = "missing headers:"
-    in Just $ unlines (msg : formatHeaders missing ++ "the actual headers were:" : formatHeaders actual)
+checkHeaders :: [Header] -> [MatchHeader] -> Maybe String
+checkHeaders headers m = case go m of
+    [] -> Nothing
+    xs -> Just (mconcat xs ++ "the actual headers were:\n" ++ unlines (map (("  " ++) . formatHeader) headers))
   where
-    formatHeaders = map (("  " ++) . formatHeader)
+    go = catMaybes . map (\(MatchHeader p) -> p headers)
+
+(<:>) :: HeaderName -> ByteString -> MatchHeader
+name <:> value = MatchHeader $ \headers -> guard (header `notElem` headers) >> (Just . unlines) [
+    "missing header:"
+  , "  " ++ formatHeader header
+  ]
+  where
+    header = (name, value)

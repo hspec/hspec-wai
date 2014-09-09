@@ -50,7 +50,7 @@ class FromValue a where
   fromValue :: Value -> a
 
 instance FromValue ResponseMatcher where
-  fromValue v = ResponseMatcher 200 [("Content-Type", "application/json")] (Just . encode $ v)
+  fromValue v = ResponseMatcher 200 ["Content-Type" <:> "application/json"] (Just . encode $ v)
 
 instance FromValue ByteString where
   fromValue = encode
