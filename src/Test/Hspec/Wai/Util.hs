@@ -14,7 +14,7 @@ import qualified Data.CaseInsensitive as CI
 import           Network.HTTP.Types
 
 formatHeader :: Header -> String
-formatHeader header@(name, value) = fromMaybe (show header) (safeToString $ B.concat [CI.original name, ": ", value])
+formatHeader header@(name, value) = "  " ++ fromMaybe (show header) (safeToString $ B.concat [CI.original name, ": ", value])
 
 safeToString :: ByteString -> Maybe String
 safeToString bs = do

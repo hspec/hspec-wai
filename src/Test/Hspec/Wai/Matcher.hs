@@ -61,14 +61,14 @@ match (SResponse (Status status _) headers body) (ResponseMatcher expectedStatus
 checkHeaders :: [Header] -> [MatchHeader] -> Maybe String
 checkHeaders headers m = case go m of
     [] -> Nothing
-    xs -> Just (mconcat xs ++ "the actual headers were:\n" ++ unlines (map (("  " ++) . formatHeader) headers))
+    xs -> Just (mconcat xs ++ "the actual headers were:\n" ++ unlines (map formatHeader headers))
   where
     go = catMaybes . map (\(MatchHeader p) -> p headers)
 
 (<:>) :: HeaderName -> ByteString -> MatchHeader
 name <:> value = MatchHeader $ \headers -> guard (header `notElem` headers) >> (Just . unlines) [
     "missing header:"
-  , "  " ++ formatHeader header
+  , formatHeader header
   ]
   where
     header = (name, value)

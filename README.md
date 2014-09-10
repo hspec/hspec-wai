@@ -25,11 +25,9 @@ app :: IO Application
 app = S.scottyApp $ do
   S.get "/" $ do
     S.text "hello"
-    S.setHeader "Content-Type" "text/plain"
 
   S.get "/some-json" $ do
     S.json $ object ["foo" .= Number 23, "bar" .= Number 42]
-    S.setHeader "Content-Type" "application/json"
 
 spec :: Spec
 spec = with app $ do
@@ -43,8 +41,8 @@ spec = with app $ do
     it "responds with 200 / 'hello'" $ do
       get "/" `shouldRespondWith` "hello" {matchStatus = 200}
 
-    it "has Content-Type: text/plain" $ do
-      get "/" `shouldRespondWith` 200 {matchHeaders = ["Content-Type" <:> "text/plain"]}
+    it "has 'Content-Type: text/plain; charset=utf-8'" $ do
+      get "/" `shouldRespondWith` 200 {matchHeaders = ["Content-Type" <:> "text/plain; charset=utf-8"]}
 
   describe "GET /some-json" $ do
     it "responds with some JSON" $ do

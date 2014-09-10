@@ -5,11 +5,15 @@ module Test.Hspec.Wai.JSON (
 , FromValue(..)
 ) where
 
-import           Test.Hspec.Wai
+import           Data.List
 import           Data.ByteString.Lazy (ByteString)
+import qualified Data.ByteString.Lazy as BL
 import           Data.Aeson (Value, encode)
 import           Data.Aeson.QQ
 import           Language.Haskell.TH.Quote
+
+import           Test.Hspec.Wai
+import           Test.Hspec.Wai.Util
 
 -- $setup
 -- The examples in this module assume that you have the @QuasiQuotes@ language
@@ -50,7 +54,14 @@ class FromValue a where
   fromValue :: Value -> a
 
 instance FromValue ResponseMatcher where
-  fromValue v = ResponseMatcher 200 ["Content-Type" <:> "application/json"] (Just . encode $ v)
+  fromValue v = ResponseMatcher 200 [MatchHeader p] (Just body)
+    where
+      body = fromValue v
+      permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
+      addIfASCII h = if BL.all (< 128) body then (h :) else id
+      p headers = if any (`elem` permissibleHeaders) headers
+        then Nothing
+        else (Just . unlines) ("missing header:" : (intersperse "  OR" $ map formatHeader permissibleHeaders))
 
 instance FromValue ByteString where
   fromValue = encode

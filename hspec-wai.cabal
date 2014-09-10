@@ -61,6 +61,9 @@ test-suite spec
     , wai
     , wai-extra
     , hspec2
+    , template-haskell
+    , aeson
+    , aeson-qq
 
 test-suite README
   type:
