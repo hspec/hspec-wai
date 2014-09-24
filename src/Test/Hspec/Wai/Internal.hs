@@ -7,6 +7,7 @@ module Test.Hspec.Wai.Internal (
 , WaiSession(..)
 , runWaiSession
 , getApp
+, formatHeader
 ) where
 
 import           Control.Applicative
@@ -16,6 +17,7 @@ import           Network.Wai (Application)
 import           Network.Wai.Test hiding (request)
 import           Test.Hspec
 import           Test.Hspec.Core (Example (..))
+import           Test.Hspec.Wai.Util (formatHeader)
 
 -- | An expectation in the `WaiSession` monad.  Failing expectations are
 -- communicated through exceptions (similar to `Expectation` and
