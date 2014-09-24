@@ -1,6 +1,11 @@
 language: haskell
 
+install:
+  - cabal install doctest markdown-unlit
+
 script:
- - cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test
- - cabal install doctest
- - doctest -isrc -hide-all-packages -package base -package bytestring -package text -package transformers -package case-insensitive -package http-types -package wai -package wai-extra -package hspec2 -package template-haskell -package aeson -package aeson-qq src/Test/Hspec/Wai/JSON.hs
+  -                      (cabal install --only-dependencies --enable-tests && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test && cabal sdist && cabal install dist/hspec-wai-*.tar.gz)
+  - (cd hspec-wai-json && cabal install --only-dependencies --enable-tests && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test && cabal sdist && cabal install dist/hspec-wai-*.tar.gz)
+  - doctest    -package hspec2 -isrc hspec-wai-json/src/Test/Hspec/Wai/JSON.hs
+  - cabal install scotty
+  - ghc --make -package hspec2 -Wall -Werror -pgmLmarkdown-unlit README.lhs

@@ -13,7 +13,7 @@ import           Data.Aeson.QQ
 import           Language.Haskell.TH.Quote
 
 import           Test.Hspec.Wai
-import           Test.Hspec.Wai.Util
+import           Test.Hspec.Wai.Internal (formatHeader)
 
 -- $setup
 -- The examples in this module assume that you have the @QuasiQuotes@ language

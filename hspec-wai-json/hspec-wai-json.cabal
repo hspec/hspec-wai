@@ -1,4 +1,4 @@
-name:             hspec-wai
+name:             hspec-wai-json
 version:          0.4.1
 license:          MIT
 license-file:     LICENSE
@@ -9,8 +9,8 @@ maintainer:       Fujimura Daisuke <me@fujimuradaisuke.com>, Simon Hengel <sol@t
 build-type:       Simple
 cabal-version:    >= 1.8
 category:         Testing
-synopsis:         Experimental Hspec support for testing WAI applications (depends on hspec2!)
-description:      Experimental Hspec support for testing WAI applications (depends on hspec2!)
+synopsis:         Testing JSON APIs with hspec-wai
+description:      Testing JSON APIs with hspec-wai
 
 source-repository head
   type: git
@@ -22,21 +22,14 @@ library
   hs-source-dirs:
       src
   exposed-modules:
-      Test.Hspec.Wai
-      Test.Hspec.Wai.Internal
-  other-modules:
-      Test.Hspec.Wai.Util
-      Test.Hspec.Wai.Matcher
+      Test.Hspec.Wai.JSON
   build-depends:
       base == 4.*
+    , hspec-wai == 0.4.*
     , bytestring
-    , text
-    , transformers
-    , case-insensitive
-    , http-types
-    , wai >= 3
-    , wai-extra >= 3
-    , hspec2
+    , template-haskell
+    , aeson
+    , aeson-qq >= 0.7.3
 
 test-suite spec
   type:
@@ -44,16 +37,11 @@ test-suite spec
   ghc-options:
       -Wall
   hs-source-dirs:
-      src, test
+      test
   main-is:
       Spec.hs
   build-depends:
       base == 4.*
-    , bytestring
-    , text
-    , transformers
-    , case-insensitive
-    , http-types
-    , wai
-    , wai-extra
+    , hspec-wai-json
+    , hspec-wai
     , hspec2
