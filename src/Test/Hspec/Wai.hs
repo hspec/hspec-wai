@@ -23,6 +23,8 @@ module Test.Hspec.Wai (
 -- * Helpers and re-exports
 , liftIO
 , with
+, Test.Hspec.Wai.pending
+, Test.Hspec.Wai.pendingWith
 ) where
 
 import           Data.Foldable
@@ -41,6 +43,14 @@ import           Test.Hspec.Wai.Matcher
 -- | An alias for `before`.
 with :: IO a -> SpecWith a -> Spec
 with = before
+
+-- | A lifted version of `Test.Hspec.pending`.
+pending :: WaiSession ()
+pending = liftIO Test.Hspec.pending
+
+-- | A lifted version of `Test.Hspec.pendingWith`.
+pendingWith :: String -> WaiSession ()
+pendingWith = liftIO . Test.Hspec.pendingWith
 
 -- | Set the expectation that a response matches a specified `ResponseMatcher`.
 --
