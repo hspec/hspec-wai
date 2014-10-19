@@ -36,7 +36,7 @@ library
     , http-types
     , wai >= 3
     , wai-extra >= 3
-    , hspec2
+    , hspec-expectations
 
 test-suite spec
   type:
@@ -56,4 +56,6 @@ test-suite spec
     , http-types
     , wai
     , wai-extra
-    , hspec2
+    , hspec-expectations
+
+    , hspec

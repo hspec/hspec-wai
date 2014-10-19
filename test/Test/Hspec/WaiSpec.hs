@@ -12,8 +12,8 @@ import Test.Hspec.Wai
 main :: IO ()
 main = hspec spec
 
-expectMethod :: Method -> Application
-expectMethod method req respond = do
+expectMethod :: Method -> IO Application
+expectMethod method = return $ \req respond -> do
   requestMethod req `shouldBe` method
   respond $ responseLBS status200 [] ""
 
@@ -28,24 +28,24 @@ expectRequest method path body headers req respond = do
 
 spec :: Spec
 spec = do
-  describe "get" $ with (return $ expectMethod methodGet) $
-    it "sends a get request" $
+  describe "get" $ do
+    it "sends a get request" $ withApplication (expectMethod methodGet) $ do
       get "/" `shouldRespondWith` 200
 
-  describe "post" $ with (return $ expectMethod methodPost) $
-    it "sends a post request" $
+  describe "post" $ do
+    it "sends a post request" $ withApplication (expectMethod methodPost) $ do
       post "/" "" `shouldRespondWith` 200
 
-  describe "put" $ with (return $ expectMethod methodPut) $
-    it "sends a put request" $
+  describe "put" $ do
+    it "sends a put request" $ withApplication (expectMethod methodPut) $ do
       put "/" "" `shouldRespondWith` 200
 
-  describe "delete" $ with (return $ expectMethod methodDelete) $
-    it "sends a delete request" $
+  describe "delete" $ do
+    it "sends a delete request" $ withApplication (expectMethod methodDelete) $ do
       delete "/" `shouldRespondWith` 200
 
-  describe "request" $ with (return $ expectRequest methodGet "/foo" body accept) $
-    it "sends method, path, headers, and body" $
+  describe "request" $ do
+    it "sends method, path, headers, and body" $ withApplication (return $ expectRequest methodGet "/foo" body accept) $ do
       request methodGet "/foo" accept (BL.fromChunks [body]) `shouldRespondWith` 200
 
   where

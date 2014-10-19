@@ -15,8 +15,6 @@ import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Reader
 import           Network.Wai (Application)
 import           Network.Wai.Test hiding (request)
-import           Test.Hspec
-import           Test.Hspec.Core (Example (..))
 import           Test.Hspec.Wai.Util (formatHeader)
 
 -- | An expectation in the `WaiSession` monad.  Failing expectations are
@@ -31,10 +29,6 @@ newtype WaiSession a = WaiSession {unWaiSession :: Session a}
 
 runWaiSession :: WaiSession a -> Application -> IO a
 runWaiSession = runSession . unWaiSession
-
-instance Example WaiExpectation where
-  type Arg WaiExpectation = Application
-  evaluateExample e p action = evaluateExample (action $ runWaiSession e) p ($ ())
 
 getApp :: WaiSession Application
 getApp = WaiSession ask

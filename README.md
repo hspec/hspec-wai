@@ -30,22 +30,22 @@ app = S.scottyApp $ do
     S.json $ object ["foo" .= Number 23, "bar" .= Number 42]
 
 spec :: Spec
-spec = with app $ do
+spec = do
   describe "GET /" $ do
-    it "responds with 200" $ do
+    it "responds with 200" $ withApplication app $ do
       get "/" `shouldRespondWith` 200
 
-    it "responds with 'hello'" $ do
+    it "responds with 'hello'" $ withApplication app $ do
       get "/" `shouldRespondWith` "hello"
 
-    it "responds with 200 / 'hello'" $ do
+    it "responds with 200 / 'hello'" $ withApplication app $ do
       get "/" `shouldRespondWith` "hello" {matchStatus = 200}
 
-    it "has 'Content-Type: text/plain; charset=utf-8'" $ do
+    it "has 'Content-Type: text/plain; charset=utf-8'" $ withApplication app $ do
       get "/" `shouldRespondWith` 200 {matchHeaders = ["Content-Type" <:> "text/plain; charset=utf-8"]}
 
   describe "GET /some-json" $ do
-    it "responds with some JSON" $ do
+    it "responds with some JSON" $ withApplication app $ do
       get "/some-json" `shouldRespondWith` [json|{foo: 23, bar: 42}|]
 ~~~
 

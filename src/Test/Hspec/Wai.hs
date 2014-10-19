@@ -20,11 +20,11 @@ module Test.Hspec.Wai (
 , MatchHeader(..)
 , (<:>)
 
+-- * Run test session
+, withApplication
+
 -- * Helpers and re-exports
 , liftIO
-, with
-, Test.Hspec.Wai.pending
-, Test.Hspec.Wai.pendingWith
 ) where
 
 import           Data.Foldable
@@ -35,22 +35,16 @@ import           Network.Wai (Request(..))
 import           Network.HTTP.Types
 import           Network.Wai.Test hiding (request)
 import qualified Network.Wai.Test as Wai
-import           Test.Hspec
+import           Test.Hspec.Expectations
 
 import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
 
--- | An alias for `before`.
-with :: IO a -> SpecWith a -> Spec
-with = before
+import           Network.Wai (Application)
 
--- | A lifted version of `Test.Hspec.pending`.
-pending :: WaiSession ()
-pending = liftIO Test.Hspec.pending
-
--- | A lifted version of `Test.Hspec.pendingWith`.
-pendingWith :: String -> WaiSession ()
-pendingWith = liftIO . Test.Hspec.pendingWith
+-- | Run test with specified `Application`.
+withApplication :: IO Application -> WaiExpectation -> Expectation
+withApplication app action = app >>= runWaiSession action
 
 -- | Set the expectation that a response matches a specified `ResponseMatcher`.
 --

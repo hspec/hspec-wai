@@ -42,6 +42,6 @@ test-suite spec
       Spec.hs
   build-depends:
       base == 4.*
+    , hspec
     , hspec-wai-json
     , hspec-wai
-    , hspec2
