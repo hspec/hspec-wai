@@ -95,9 +95,13 @@ shouldRespondWith action matcher = do
 get :: ByteString -> WaiSession SResponse
 get path = request methodGet path [] ""
 
--- | Perform a @POST@ request to the application under test.
-post :: ByteString -> LB.ByteString -> WaiSession SResponse
-post path = request methodPost path []
+-- | Perform a @POST@ request to the application under test using the default
+-- Content-Type header application/x-www.form-urlencoded.
+post :: ByteString -- ^ Path
+     -> LB.ByteString -- ^ Body, form-urlencoded
+     -> WaiSession SResponse
+post path = request methodPost path [("Content-Type",
+                                      "application/x-www-form-urlencoded")]
 
 -- | Perform a @PUT@ request to the application under test.
 put :: ByteString -> LB.ByteString -> WaiSession SResponse
