@@ -10,7 +10,6 @@ applications with [Hspec](http://hspec.github.io/)
 {-# LANGUAGE OverloadedStrings, QuasiQuotes #-}
 module Main (main) where
 
-import           Test.Hspec
 import           Test.Hspec.Wai
 import           Test.Hspec.Wai.JSON
 

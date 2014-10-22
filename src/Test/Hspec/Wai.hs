@@ -26,6 +26,12 @@ module Test.Hspec.Wai (
 -- * Helpers and re-exports
 , liftIO
 , with
+, Spec
+, hspec
+, describe
+, context
+, it
+, specify
 , Test.Hspec.Wai.pending
 , Test.Hspec.Wai.pendingWith
 ) where
