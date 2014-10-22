@@ -43,8 +43,10 @@ library
     , wai-extra >= 3
     , hspec-core == 2.*
     , hspec-expectations
+    , QuickCheck
   exposed-modules:
       Test.Hspec.Wai
+      Test.Hspec.Wai.QuickCheck
       Test.Hspec.Wai.Internal
   other-modules:
       Test.Hspec.Wai.Matcher
@@ -70,12 +72,14 @@ test-suite spec
     , wai-extra >= 3
     , hspec-core == 2.*
     , hspec-expectations
+    , QuickCheck
     , hspec
     , QuickCheck
   other-modules:
       Test.Hspec.Wai
       Test.Hspec.Wai.Internal
       Test.Hspec.Wai.Matcher
+      Test.Hspec.Wai.QuickCheck
       Test.Hspec.Wai.Util
       Test.Hspec.Wai.MatcherSpec
       Test.Hspec.Wai.UtilSpec
