@@ -34,10 +34,12 @@ dependencies:
   - wai-extra >= 3
   - hspec-core == 2.*
   - hspec-expectations
+  - QuickCheck
 
 library:
   exposed-modules:
     - Test.Hspec.Wai
+    - Test.Hspec.Wai.QuickCheck
     - Test.Hspec.Wai.Internal
 
 tests:
