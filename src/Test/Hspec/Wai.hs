@@ -34,9 +34,14 @@ module Test.Hspec.Wai (
 , Hspec.specify
 , Test.Hspec.Wai.pending
 , Test.Hspec.Wai.pendingWith
+
+-- ** Re-exported Test.Hspec expectations
+, shouldBe
+, shouldSatisfy
+, shouldReturn
+, shouldThrow
 ) where
 
-import           Data.Foldable
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
 import           Control.Monad.IO.Class
@@ -48,6 +53,7 @@ import qualified Test.Hspec as Hspec
 
 import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
+import           Test.Hspec.Wai.Expectation
 
 -- | An alias for `before`.
 with :: IO a -> Hspec.SpecWith a -> Hspec.Spec
@@ -61,44 +67,6 @@ pending = liftIO Hspec.pending
 pendingWith :: String -> WaiSession ()
 pendingWith = liftIO . Hspec.pendingWith
 
--- | Set the expectation that a response matches a specified `ResponseMatcher`.
---
--- A @ResponseMatcher@ matches a response if:
---
--- * the specified status matches the HTTP response status code
---
--- * the specified body (if any) matches the response body
---
--- * the response has all of the specified `Header` fields
---   (the response may have arbitrary additional `Header` fields)
---
--- You can use @ResponseMatcher@'s (broken) `Num` instance to match for a HTTP
--- status code:
---
--- > get "/" `shouldRespondWith` 200
--- > -- matches if status is 200
---
--- You can use @ResponseMatcher@'s `IsString` instance to match for a HTTP
--- status @200@ and a body:
---
--- > get "/" `shouldRespondWith` "foo"
--- > -- matches if body is "foo" and status is 200
---
--- If you want to match for a different HTTP status, you can use record update
--- notation to specify `matchStatus` explicitly:
---
--- > get "/" `shouldRespondWith` "foo" {matchStatus = 404}
--- > -- matches if body is "foo" and status is 404
---
--- If you want to require a specific header field you can specify
--- `matchHeaders`:
---
--- > get "/" `shouldRespondWith` "foo" {matchHeaders = ["Content-Type" <:> "text/plain"]}
--- > -- matches if body is "foo", status is 200 and ther is a header field "Content-Type: text/plain"
-shouldRespondWith :: WaiSession SResponse -> ResponseMatcher -> WaiExpectation
-shouldRespondWith action matcher = do
-  r <- action
-  forM_ (match r matcher) (liftIO . Hspec.expectationFailure)
 
 -- | Perform a @GET@ request to the application under test.
 get :: ByteString -> WaiSession SResponse
