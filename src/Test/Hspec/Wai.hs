@@ -26,12 +26,12 @@ module Test.Hspec.Wai (
 -- * Helpers and re-exports
 , liftIO
 , with
-, Spec
-, hspec
-, describe
-, context
-, it
-, specify
+, Hspec.Spec
+, Hspec.hspec
+, Hspec.describe
+, Hspec.context
+, Hspec.it
+, Hspec.specify
 , Test.Hspec.Wai.pending
 , Test.Hspec.Wai.pendingWith
 ) where
@@ -44,22 +44,22 @@ import           Network.Wai (Request(..))
 import           Network.HTTP.Types
 import           Network.Wai.Test hiding (request)
 import qualified Network.Wai.Test as Wai
-import           Test.Hspec
+import qualified Test.Hspec as Hspec
 
 import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
 
 -- | An alias for `before`.
-with :: IO a -> SpecWith a -> Spec
-with = before
+with :: IO a -> Hspec.SpecWith a -> Hspec.Spec
+with = Hspec.before
 
 -- | A lifted version of `Test.Hspec.pending`.
 pending :: WaiSession ()
-pending = liftIO Test.Hspec.pending
+pending = liftIO Hspec.pending
 
 -- | A lifted version of `Test.Hspec.pendingWith`.
 pendingWith :: String -> WaiSession ()
-pendingWith = liftIO . Test.Hspec.pendingWith
+pendingWith = liftIO . Hspec.pendingWith
 
 -- | Set the expectation that a response matches a specified `ResponseMatcher`.
 --
@@ -98,7 +98,7 @@ pendingWith = liftIO . Test.Hspec.pendingWith
 shouldRespondWith :: WaiSession SResponse -> ResponseMatcher -> WaiExpectation
 shouldRespondWith action matcher = do
   r <- action
-  forM_ (match r matcher) (liftIO . expectationFailure)
+  forM_ (match r matcher) (liftIO . Hspec.expectationFailure)
 
 -- | Perform a @GET@ request to the application under test.
 get :: ByteString -> WaiSession SResponse
