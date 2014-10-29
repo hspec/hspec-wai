@@ -16,11 +16,6 @@ module Test.Hspec.Wai (
 
 -- ** Performing requests with encoded parameters
 , postWithParams
-, postWithParams'
-, putWithParams
-, putWithParams'
-, patchWithParams
-, patchWithParams'
 
 -- * Matching on the response
 , shouldRespondWith
@@ -127,44 +122,9 @@ request method path headers body = getApp >>= liftIO . runSession (Wai.srequest 
     req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path
 
 -- | Perform a @POST@ request to the application under test with a list of
--- parameters to be encoded, including empty parameters.
-postWithParams :: ByteString -> Query -> WaiSession SResponse
-postWithParams = requestWithParams methodPost
-
--- | Perform a @POST@ request to the application under test with a list of
--- non-empty parameters to be encoded.
-postWithParams' :: ByteString -> SimpleQuery -> WaiSession SResponse
-postWithParams' = requestWithParams' methodPost
-
--- | Perform a @PUT@ request to the application under test with a list of
--- parameters to be encoded, including empty parameters.
-putWithParams :: ByteString -> Query -> WaiSession SResponse
-putWithParams = requestWithParams methodPut
-
--- | Perform a @PUT@ request to the application under test with a list of
--- non-empty parameters to be encoded.
-putWithParams' :: ByteString -> SimpleQuery -> WaiSession SResponse
-putWithParams' = requestWithParams' methodPut
-
--- | Perform a @PATCH@ request to the application under test with a list of
--- parameters to be encoded, including empty parameters.
-patchWithParams :: ByteString -> Query -> WaiSession SResponse
-patchWithParams = requestWithParams methodPatch
-
--- | Perform a @PATCH@ request to the application under test with a list of
--- non-empty parameters to be encoded.
-patchWithParams' :: ByteString -> SimpleQuery -> WaiSession SResponse
-patchWithParams' = requestWithParams' methodPatch
-
-requestWithParams :: Method -> ByteString -> Query -> WaiSession SResponse
-requestWithParams method path = request method path formEncoded . encodeParams
+-- key-value tuples to be encoded as query parameters
+postWithParams :: ByteString -> SimpleQuery -> WaiSession SResponse
+postWithParams path = request methodPost path formHeaders . encodeParams
   where
-   encodeParams = LB.fromStrict . renderQuery False
-
-requestWithParams' :: Method -> ByteString -> SimpleQuery -> WaiSession SResponse
-requestWithParams' method path = request method path formEncoded . encodeParams
-  where
-   encodeParams = LB.fromStrict . renderSimpleQuery False
-
-formEncoded :: [Header]
-formEncoded = [(hContentType, "application/x-www-form-urlencoded")]
+    encodeParams = LB.fromStrict . renderSimpleQuery False
+    formHeaders  = [(hContentType, "application/x-www-form-urlencoded")]
