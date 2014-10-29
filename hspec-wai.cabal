@@ -27,6 +27,7 @@ library
   other-modules:
       Test.Hspec.Wai.Util
       Test.Hspec.Wai.Matcher
+      Test.Hspec.Wai.Expectations
   build-depends:
       base == 4.*
     , bytestring
@@ -37,6 +38,7 @@ library
     , wai >= 3
     , wai-extra >= 3
     , hspec2
+    , hspec-expectations
 
 test-suite spec
   type:
@@ -57,3 +59,4 @@ test-suite spec
     , wai
     , wai-extra
     , hspec2
+    , hspec-expectations
