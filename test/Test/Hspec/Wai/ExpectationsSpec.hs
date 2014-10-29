@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Test.Hspec.Wai.ExpectationSpec (main, spec) where
+module Test.Hspec.Wai.ExpectationsSpec (main, spec) where
 
 import           Control.Exception
 import           Network.HTTP.Types (status200)

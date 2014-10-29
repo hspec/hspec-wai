@@ -50,7 +50,7 @@ import qualified Test.Hspec as Hspec
 
 import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
-import           Test.Hspec.Wai.Expectation
+import           Test.Hspec.Wai.Expectations
 
 -- | An alias for `before`.
 with :: IO a -> Hspec.SpecWith a -> Hspec.Spec
