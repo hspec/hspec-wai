@@ -30,7 +30,6 @@ spec :: Spec
 spec = do
 
   describe "request functions" $ do
-
     describe "get" $ with (return $ expectMethod methodGet) $
       it "sends a get request" $
         get "/" `shouldRespondWith` 200
@@ -51,12 +50,10 @@ spec = do
       it "sends method, path, headers, and body" $
         request methodGet "/foo" jsonAccept (BL.fromChunks [jsonBody]) `shouldRespondWith` 200
 
-  describe "request functions with with encoded params" $
-
+  describe "request functions with encoded params" $
     describe "postWithParams" $ with (return $ expectRequest methodPost "/foo" formBody formEncoded) $
       it "sends a post request with form-encoded params" $
         postWithParams "/foo" queryParams `shouldRespondWith` 200
-
 
   where
     jsonAccept = [(hAccept, "application/json")]
