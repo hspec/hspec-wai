@@ -11,7 +11,6 @@ where
 
 import           Data.Foldable
 import           Control.Monad.IO.Class
-import           Control.Exception (Exception)
 import           Network.Wai.Test hiding (request)
 import qualified Test.Hspec.Expectations.Lifted as Hspec
 
