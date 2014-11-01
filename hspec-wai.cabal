@@ -38,7 +38,7 @@ library
     , wai >= 3
     , wai-extra >= 3
     , hspec2
-    , hspec-expectations
+    , hspec-expectations-lifted
 
 test-suite spec
   type:
@@ -59,4 +59,4 @@ test-suite spec
     , wai
     , wai-extra
     , hspec2
-    , hspec-expectations
+    , hspec-expectations-lifted

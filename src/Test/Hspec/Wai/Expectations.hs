@@ -6,7 +6,6 @@ module Test.Hspec.Wai.Expectations
 , shouldBe
 , shouldSatisfy
 , shouldReturn
-, shouldThrow
 )
 where
 
@@ -14,7 +13,7 @@ import           Data.Foldable
 import           Control.Monad.IO.Class
 import           Control.Exception (Exception)
 import           Network.Wai.Test hiding (request)
-import qualified Test.Hspec.Expectations as Hspec
+import qualified Test.Hspec.Expectations.Lifted as Hspec
 
 import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
@@ -60,19 +59,12 @@ shouldRespondWith action matcher = do
 
 -- | Same as `Hspec.shouldBe` but lifted to the `WaiSession`-monad.
 shouldBe :: (Show a, Eq a) => a -> a -> WaiExpectation
-shouldBe = liftIO .: Hspec.shouldBe
+shouldBe = Hspec.shouldBe
 
 -- | Same as `Hspec.shouldSatisfy` but lifted to the `WaiSession`-monad.
 shouldSatisfy :: Show a => a -> (a -> Bool) -> WaiExpectation
-shouldSatisfy = liftIO .: Hspec.shouldSatisfy
+shouldSatisfy = Hspec.shouldSatisfy
 
 -- | Same as `Hspec.shouldReturn` but lifted to the `WaiSession`-monad.
-shouldReturn :: (Show a, Eq a) => IO a -> a -> WaiExpectation
-shouldReturn = liftIO .: Hspec.shouldReturn
-
--- | Same as `Hspec.shouldThrow` but lifted to the `WaiSession`-monad.
-shouldThrow :: Exception e => IO a -> Hspec.Selector e -> WaiExpectation
-shouldThrow = liftIO .: Hspec.shouldThrow
-
-(.:) :: (a -> b) -> (c -> d -> a) -> c -> d -> b
-(.:) =  (.).(.)
+shouldReturn :: (Show a, Eq a) => WaiSession a -> a -> WaiExpectation
+shouldReturn = Hspec.shouldReturn

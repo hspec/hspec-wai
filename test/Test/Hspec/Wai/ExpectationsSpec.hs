@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Hspec.Wai.ExpectationsSpec (main, spec) where
 
-import           Control.Exception
 import           Network.HTTP.Types (status200)
 import           Network.Wai (Application, responseLBS)
 import           Test.Hspec.Wai
@@ -29,6 +28,3 @@ spec = with (return app) $ do
 
     it "wraps shouldReturn in a WaiSession" $
       return True `shouldReturn` True
-
-    it "wraps shouldThrow in a WaiSession" $
-      throw DivideByZero `shouldThrow` (== DivideByZero)

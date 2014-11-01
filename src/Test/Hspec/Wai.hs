@@ -39,7 +39,6 @@ module Test.Hspec.Wai (
 , shouldBe
 , shouldSatisfy
 , shouldReturn
-, shouldThrow
 ) where
 
 import           Data.ByteString (ByteString)
