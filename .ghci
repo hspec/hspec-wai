@@ -1,2 +1,5 @@
-:set -packagehspec2 -hide-packagehspec -isrc -itest -pgmL markdown-unlit
+:set -hide-packagehspec
+:set -packagehspec2
+:set -pgmL markdown-unlit
+:set -isrc -itest
 :set -ihspec-wai-json/src
