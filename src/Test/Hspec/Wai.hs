@@ -95,7 +95,10 @@ request method path headers body = getApp >>= liftIO . runSession (Wai.srequest 
     req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path
 
 -- | Perform a @POST@ request to the application under test with a list of
--- key-value tuples to be encoded as query parameters
+-- key-value pairs to be encoded as query parameters.
+--
+-- In additon a @Content-Type@-header of @application/x-www-form-urlencoded@ is
+-- added to the request.
 postQuery :: ByteString -> SimpleQuery -> WaiSession SResponse
 postQuery path = request methodPost path formHeaders . encodeParams
   where
