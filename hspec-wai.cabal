@@ -37,7 +37,8 @@ library
     , http-types
     , wai >= 3
     , wai-extra >= 3
-    , hspec2
+    , hspec == 2.*
+    , hspec-core == 2.*
     , hspec-expectations-lifted
 
 test-suite spec
@@ -58,5 +59,6 @@ test-suite spec
     , http-types
     , wai
     , wai-extra
-    , hspec2
+    , hspec
+    , hspec-core
     , hspec-expectations-lifted
