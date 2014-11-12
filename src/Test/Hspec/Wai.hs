@@ -14,9 +14,6 @@ module Test.Hspec.Wai (
 , delete
 , request
 
--- ** Performing requests with encoded parameters
-, postQuery
-
 -- * Matching on the response
 , shouldRespondWith
 , ResponseMatcher(..)
@@ -93,14 +90,3 @@ request :: Method -> ByteString -> [Header] -> LB.ByteString -> WaiSession SResp
 request method path headers body = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req body)
   where
     req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path
-
--- | Perform a @POST@ request to the application under test with a list of
--- key-value pairs to be encoded as query parameters.
---
--- In additon a @Content-Type@-header of @application/x-www-form-urlencoded@ is
--- added to the request.
-postQuery :: ByteString -> SimpleQuery -> WaiSession SResponse
-postQuery path = request methodPost path formHeaders . encodeParams
-  where
-    encodeParams = LB.fromStrict . renderSimpleQuery False
-    formHeaders  = [(hContentType, "application/x-www-form-urlencoded")]

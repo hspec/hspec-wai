@@ -2,15 +2,15 @@
 module Test.Hspec.WaiSpec (main, spec) where
 
 import qualified Test.Hspec as Hspec
-import Data.ByteString (ByteString)
+import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as BL
-import Network.HTTP.Types
-import Network.Wai
+import           Network.HTTP.Types
+import           Network.Wai
 
-import Test.Hspec.Wai
+import           Test.Hspec.Wai
 
 main :: IO ()
-main = Hspec.hspec spec
+main = hspec spec
 
 expectMethod :: Method -> Application
 expectMethod method req respond = do
@@ -48,13 +48,6 @@ spec = do
     it "sends method, path, headers, and body" $
       request methodGet "/foo" jsonAccept (BL.fromChunks [jsonBody]) `shouldRespondWith` 200
 
-  describe "postQuery" $ with (return $ expectRequest methodPost "/foo" formBody formEncoded) $
-    it "sends a post request with form-encoded params" $
-      postQuery "/foo" queryParams `shouldRespondWith` 200
-
   where
     jsonAccept = [(hAccept, "application/json")]
     jsonBody = "{\"foo\": 1}"
-    formEncoded = [(hContentType, "application/x-www-form-urlencoded")]
-    formBody = "foo=1"
-    queryParams = [("foo", "1")]
