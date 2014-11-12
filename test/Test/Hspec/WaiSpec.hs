@@ -28,32 +28,29 @@ expectRequest method path body headers req respond = do
 
 spec :: Spec
 spec = do
+  describe "get" $ with (return $ expectMethod methodGet) $
+    it "sends a get request" $
+      get "/" `shouldRespondWith` 200
 
-  describe "request functions" $ do
-    describe "get" $ with (return $ expectMethod methodGet) $
-      it "sends a get request" $
-        get "/" `shouldRespondWith` 200
+  describe "post" $ with (return $ expectMethod methodPost) $
+    it "sends a post request" $
+      post "/" "" `shouldRespondWith` 200
 
-    describe "post" $ with (return $ expectMethod methodPost) $
-      it "sends a post request" $
-        post "/" "" `shouldRespondWith` 200
+  describe "put" $ with (return $ expectMethod methodPut) $
+    it "sends a put request" $
+      put "/" "" `shouldRespondWith` 200
 
-    describe "put" $ with (return $ expectMethod methodPut) $
-      it "sends a put request" $
-        put "/" "" `shouldRespondWith` 200
+  describe "delete" $ with (return $ expectMethod methodDelete) $
+    it "sends a delete request" $
+      delete "/" `shouldRespondWith` 200
 
-    describe "delete" $ with (return $ expectMethod methodDelete) $
-      it "sends a delete request" $
-        delete "/" `shouldRespondWith` 200
+  describe "request" $ with (return $ expectRequest methodGet "/foo" jsonBody jsonAccept) $
+    it "sends method, path, headers, and body" $
+      request methodGet "/foo" jsonAccept (BL.fromChunks [jsonBody]) `shouldRespondWith` 200
 
-    describe "request" $ with (return $ expectRequest methodGet "/foo" jsonBody jsonAccept) $
-      it "sends method, path, headers, and body" $
-        request methodGet "/foo" jsonAccept (BL.fromChunks [jsonBody]) `shouldRespondWith` 200
-
-  describe "request functions with encoded params" $
-    describe "postQuery" $ with (return $ expectRequest methodPost "/foo" formBody formEncoded) $
-      it "sends a post request with form-encoded params" $
-        postQuery "/foo" queryParams `shouldRespondWith` 200
+  describe "postQuery" $ with (return $ expectRequest methodPost "/foo" formBody formEncoded) $
+    it "sends a post request with form-encoded params" $
+      postQuery "/foo" queryParams `shouldRespondWith` 200
 
   where
     jsonAccept = [(hAccept, "application/json")]

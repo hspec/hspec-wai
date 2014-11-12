@@ -1,5 +1,5 @@
-module Test.Hspec.Wai.Expectations
-( -- * Matching on the response
+module Test.Hspec.Wai.Expectations (
+  -- * Matching on the response
   shouldRespondWith
 
   -- * Re-exports from Test.Hspec
