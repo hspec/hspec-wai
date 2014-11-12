@@ -6,6 +6,6 @@ install:
 script:
   -                      (cabal install --only-dependencies --enable-tests && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test && cabal sdist && cabal install dist/hspec-wai-*.tar.gz)
   - (cd hspec-wai-json && cabal install --only-dependencies --enable-tests && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test && cabal sdist && cabal install dist/hspec-wai-*.tar.gz)
-  - doctest    -package hspec2 -isrc hspec-wai-json/src/Test/Hspec/Wai/JSON.hs
+  - doctest -isrc hspec-wai-json/src/Test/Hspec/Wai/JSON.hs
   - cabal install scotty
-  - ghc --make -package hspec2 -Wall -Werror -pgmLmarkdown-unlit README.lhs
+  - ghc --make -Wall -Werror -pgmLmarkdown-unlit README.lhs
