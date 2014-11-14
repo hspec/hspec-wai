@@ -9,8 +9,8 @@ maintainer:       Fujimura Daisuke <me@fujimuradaisuke.com>, Simon Hengel <sol@t
 build-type:       Simple
 cabal-version:    >= 1.8
 category:         Testing
-synopsis:         Experimental Hspec support for testing WAI applications (depends on hspec2!)
-description:      Experimental Hspec support for testing WAI applications (depends on hspec2!)
+synopsis:         Experimental Hspec support for testing WAI applications
+description:      Experimental Hspec support for testing WAI applications
 
 source-repository head
   type: git
