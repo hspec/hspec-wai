@@ -15,8 +15,7 @@ import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Reader
 import           Network.Wai (Application)
 import           Network.Wai.Test hiding (request)
-import           Test.Hspec
-import           Test.Hspec.Core.Spec (Example (..))
+import           Test.Hspec.Core.Spec
 import           Test.Hspec.Wai.Util (formatHeader)
 
 -- | An expectation in the `WaiSession` monad.  Failing expectations are

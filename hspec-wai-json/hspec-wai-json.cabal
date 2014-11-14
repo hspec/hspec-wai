@@ -44,4 +44,4 @@ test-suite spec
       base == 4.*
     , hspec-wai-json
     , hspec-wai
-    , hspec2
+    , hspec

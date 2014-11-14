@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Hspec.WaiSpec (main, spec) where
 
-import qualified Test.Hspec as Hspec
+import           Test.Hspec
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as BL
 import           Network.HTTP.Types
@@ -14,16 +14,16 @@ main = hspec spec
 
 expectMethod :: Method -> Application
 expectMethod method req respond = do
-  requestMethod req `Hspec.shouldBe` method
+  requestMethod req `shouldBe` method
   respond $ responseLBS status200 [] ""
 
 expectRequest :: Method -> ByteString -> ByteString -> [Header] -> Application
 expectRequest method path body headers req respond = do
-  requestMethod req `Hspec.shouldBe` method
-  rawPathInfo req `Hspec.shouldBe` path
-  requestHeaders req `Hspec.shouldBe` headers
+  requestMethod req `shouldBe` method
+  rawPathInfo req `shouldBe` path
+  requestHeaders req `shouldBe` headers
   rawBody <- requestBody req
-  rawBody `Hspec.shouldBe` body
+  rawBody `shouldBe` body
   respond $ responseLBS status200 [] ""
 
 spec :: Spec
@@ -44,10 +44,10 @@ spec = do
     it "sends a delete request" $
       delete "/" `shouldRespondWith` 200
 
-  describe "request" $ with (return $ expectRequest methodGet "/foo" jsonBody jsonAccept) $
+  describe "request" $ with (return $ expectRequest methodGet "/foo" body accept) $
     it "sends method, path, headers, and body" $
-      request methodGet "/foo" jsonAccept (BL.fromChunks [jsonBody]) `shouldRespondWith` 200
+      request methodGet "/foo" accept (BL.fromChunks [body]) `shouldRespondWith` 200
 
   where
-    jsonAccept = [(hAccept, "application/json")]
-    jsonBody = "{\"foo\": 1}"
+    accept = [(hAccept, "application/json")]
+    body = "{\"foo\": 1}"

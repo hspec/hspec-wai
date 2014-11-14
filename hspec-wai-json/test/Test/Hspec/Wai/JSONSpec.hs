@@ -3,7 +3,7 @@ module Test.Hspec.Wai.JSONSpec (main, spec) where
 
 import           Test.Hspec
 
-import           Test.Hspec.Wai hiding (shouldBe)
+import           Test.Hspec.Wai
 import           Test.Hspec.Wai.JSON
 
 main :: IO ()
