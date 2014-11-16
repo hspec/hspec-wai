@@ -29,7 +29,7 @@ library
       Test.Hspec.Wai.Matcher
   build-depends:
       base == 4.*
-    , bytestring
+    , bytestring >= 0.10
     , text
     , transformers
     , case-insensitive
@@ -61,3 +61,4 @@ test-suite spec
     , hspec-expectations
 
     , hspec
+    , QuickCheck
