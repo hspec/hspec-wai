@@ -14,6 +14,9 @@ module Test.Hspec.Wai (
 , delete
 , request
 
+-- ** Posting HTML forms
+, postHtmlForm
+
 -- * Matching on the response
 , shouldRespondWith
 , ResponseMatcher(..)
@@ -41,6 +44,7 @@ import qualified Test.Hspec.Core.Spec as Core
 import           Test.Hspec.Core.Hooks
 import           Test.Hspec.Expectations (expectationFailure)
 
+import           Test.Hspec.Wai.Util
 import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
 
@@ -121,3 +125,12 @@ request :: Method -> ByteString -> [Header] -> LB.ByteString -> WaiSession SResp
 request method path headers body = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req body)
   where
     req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path
+
+-- | Perform a @POST@ request to the application under test.
+--
+-- The specified list of key-value pairs is encoded as
+-- @application/x-www-form-urlencoded@ and used as request body.
+--
+-- In additon the @Content-Type@ is set to @application/x-www-form-urlencoded@.
+postHtmlForm :: ByteString -> [(String, String)] -> WaiSession SResponse
+postHtmlForm path = request methodPost path [(hContentType, "application/x-www-form-urlencoded")] . formUrlEncodeQuery

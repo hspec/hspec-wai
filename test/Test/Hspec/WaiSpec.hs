@@ -48,6 +48,11 @@ spec = do
     it "sends method, path, headers, and body" $
       request methodGet "/foo" accept (BL.fromChunks [body]) `shouldRespondWith` 200
 
+  describe "postHtmlForm" $ with (return $ expectRequest methodPost "/foo" "foo=bar" formEncoded) $
+    it "sends a post request with form-encoded params" $
+      postHtmlForm "/foo" [("foo", "bar")] `shouldRespondWith` 200
+
   where
     accept = [(hAccept, "application/json")]
     body = "{\"foo\": 1}"
+    formEncoded = [(hContentType, "application/x-www-form-urlencoded")]
