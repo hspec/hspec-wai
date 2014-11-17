@@ -12,6 +12,9 @@ category:         Testing
 synopsis:         Experimental Hspec support for testing WAI applications
 description:      Experimental Hspec support for testing WAI applications
 
+extra-source-files:
+  changelog
+
 source-repository head
   type: git
   location: https://github.com/hspec/hspec-wai
