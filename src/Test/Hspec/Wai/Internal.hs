@@ -6,6 +6,7 @@ module Test.Hspec.Wai.Internal (
   WaiExpectation
 , WaiSession(..)
 , runWaiSession
+, withApplication
 , getApp
 , formatHeader
 ) where
@@ -30,6 +31,9 @@ newtype WaiSession a = WaiSession {unWaiSession :: Session a}
 
 runWaiSession :: WaiSession a -> Application -> IO a
 runWaiSession = runSession . unWaiSession
+
+withApplication :: Application -> WaiSession a -> IO a
+withApplication = flip runWaiSession
 
 instance Example WaiExpectation where
   type Arg WaiExpectation = Application
