@@ -116,7 +116,7 @@ put path = request methodPut path []
 patch :: ByteString -> LB.ByteString -> WaiSession SResponse
 patch path = request methodPatch path []
 
--- | Perform a @OPTIONS@ request to the application under test.
+-- | Perform an @OPTIONS@ request to the application under test.
 options :: ByteString -> WaiSession SResponse
 options path = request methodOptions path [] ""
 
