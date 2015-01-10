@@ -40,6 +40,10 @@ spec = do
     it "sends a put request" $
       put "/" "" `shouldRespondWith` 200
 
+  describe "options" $ with (return $ expectMethod methodOptions) $
+    it "sends a options request" $
+      options "/" `shouldRespondWith` 200
+
   describe "delete" $ with (return $ expectMethod methodDelete) $
     it "sends a delete request" $
       delete "/" `shouldRespondWith` 200

@@ -11,6 +11,7 @@ module Test.Hspec.Wai (
 , post
 , put
 , patch
+, options
 , delete
 , request
 
@@ -114,6 +115,10 @@ put path = request methodPut path []
 -- | Perform a @PATCH@ request to the application under test.
 patch :: ByteString -> LB.ByteString -> WaiSession SResponse
 patch path = request methodPatch path []
+
+-- | Perform an @OPTIONS@ request to the application under test.
+options :: ByteString -> WaiSession SResponse
+options path = request methodOptions path [] ""
 
 -- | Perform a @DELETE@ request to the application under test.
 delete :: ByteString -> WaiSession SResponse
