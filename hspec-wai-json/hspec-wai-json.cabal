@@ -30,6 +30,7 @@ library
     , template-haskell
     , aeson
     , aeson-qq >= 0.7.3
+    , case-insensitive >= 1.2.0.4 
 
 test-suite spec
   type:

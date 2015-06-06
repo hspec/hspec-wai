@@ -5,11 +5,13 @@ module Test.Hspec.Wai.JSON (
 , FromValue(..)
 ) where
 
+import           Control.Arrow (second)
 import           Data.List
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as BL
 import           Data.Aeson (Value, encode)
 import           Data.Aeson.QQ
+import qualified Data.CaseInsensitive as CI
 import           Language.Haskell.TH.Quote
 
 import           Test.Hspec.Wai
@@ -59,7 +61,8 @@ instance FromValue ResponseMatcher where
       body = fromValue v
       permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
       addIfASCII h = if BL.all (< 128) body then (h :) else id
-      p headers = if any (`elem` permissibleHeaders) headers
+      ciHeaderFields = map (second CI.mk)
+      p headers = if any (`elem` ciHeaderFields permissibleHeaders) (ciHeaderFields headers)
         then Nothing
         else (Just . unlines) ("missing header:" : (intersperse "  OR" $ map formatHeader permissibleHeaders))
 
