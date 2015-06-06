@@ -21,6 +21,9 @@ spec = do
         it "accepts 'application/json; charset=utf-8'" $ do
           matcher [("Content-Type", "application/json; charset=utf-8")] `shouldBe` Nothing
 
+        it "accepts 'application/json; charset=utf-8' case-insensitive" $ do
+          matcher [("Content-Type", "application/JSON; charset=UTF-8")] `shouldBe` Nothing
+
         it "rejects other headers" $ do
           matcher [("Content-Type", "foobar")] `shouldBe` (Just . unlines) [
               "missing header:"
@@ -38,4 +41,7 @@ spec = do
             ]
 
         it "accepts 'application/json; charset=utf-8'" $ do
+          matcher [("Content-Type", "application/json; charset=utf-8")] `shouldBe` Nothing
+
+        it "accepts 'application/json; charset=UTF-8' case-insensitive" $ do
           matcher [("Content-Type", "application/json; charset=utf-8")] `shouldBe` Nothing
