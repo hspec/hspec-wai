@@ -1,0 +1,40 @@
+name:             hspec-wai-json
+version:          0.6.1
+license:          MIT
+category:         Testing
+synopsis:         Testing JSON APIs with hspec-wai
+description:      Testing JSON APIs with hspec-wai
+copyright:
+  - (c) 2012-2014 Fujimura Daisuke
+  - (c) 2014 Simon Hengel
+author:
+  - Fujimura Daisuke <me@fujimuradaisuke.com>
+  - Simon Hengel <sol@typeful.net>
+maintainer:
+  - Fujimura Daisuke <me@fujimuradaisuke.com>
+  - Simon Hengel <sol@typeful.net>
+
+github: hspec/hspec-wai
+
+ghc-options: -Wall
+
+library:
+  source-dirs: src
+  dependencies:
+    - base == 4.*
+    - hspec-wai == 0.6.*
+    - bytestring
+    - template-haskell
+    - aeson
+    - aeson-qq >= 0.7.3
+    - case-insensitive
+
+tests:
+  spec:
+    source-dirs: test
+    main: Spec.hs
+    dependencies:
+      - base == 4.*
+      - hspec-wai-json
+      - hspec-wai
+      - hspec

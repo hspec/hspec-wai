@@ -1,0 +1,48 @@
+name:             hspec-wai
+version:          0.6.3
+license:          MIT
+category:         Testing
+synopsis:         Experimental Hspec support for testing WAI applications
+description:      Experimental Hspec support for testing WAI applications
+copyright:
+  - (c) 2012-2014 Fujimura Daisuke
+  - (c) 2014 Simon Hengel
+author:
+  - Fujimura Daisuke <me@fujimuradaisuke.com>
+  - Simon Hengel <sol@typeful.net>
+maintainer:
+  - Fujimura Daisuke <me@fujimuradaisuke.com>
+  - Simon Hengel <sol@typeful.net>
+
+github: hspec/hspec-wai
+
+extra-source-files: changelog
+
+ghc-options: -Wall
+
+source-dirs: src
+
+dependencies:
+  - base == 4.*
+  - bytestring >= 0.10
+  - text
+  - transformers
+  - case-insensitive
+  - http-types
+  - wai >= 3
+  - wai-extra >= 3
+  - hspec-core == 2.*
+  - hspec-expectations
+
+library:
+  exposed-modules:
+    - Test.Hspec.Wai
+    - Test.Hspec.Wai.Internal
+
+tests:
+  spec:
+    source-dirs: test
+    main: Spec.hs
+    dependencies:
+      - hspec
+      - QuickCheck

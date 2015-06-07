@@ -1,13 +1,21 @@
+-- This file has been generated from package.yml by hpack version 0.2.0.
+--
+-- see: https://github.com/sol/hpack
+
 name:             hspec-wai-json
 version:          0.6.1
+homepage:         https://github.com/hspec/hspec-wai#readme
+bug-reports:      https://github.com/hspec/hspec-wai/issues
 license:          MIT
 license-file:     LICENSE
 copyright:        (c) 2012-2014 Fujimura Daisuke,
                   (c) 2014 Simon Hengel
-author:           Fujimura Daisuke <me@fujimuradaisuke.com>, Simon Hengel <sol@typeful.net>
-maintainer:       Fujimura Daisuke <me@fujimuradaisuke.com>, Simon Hengel <sol@typeful.net>
+author:           Fujimura Daisuke <me@fujimuradaisuke.com>,
+                  Simon Hengel <sol@typeful.net>
+maintainer:       Fujimura Daisuke <me@fujimuradaisuke.com>,
+                  Simon Hengel <sol@typeful.net>
 build-type:       Simple
-cabal-version:    >= 1.8
+cabal-version:    >= 1.10
 category:         Testing
 synopsis:         Testing JSON APIs with hspec-wai
 description:      Testing JSON APIs with hspec-wai
@@ -17,10 +25,7 @@ source-repository head
   location: https://github.com/hspec/hspec-wai
 
 library
-  ghc-options:
-      -Wall
-  hs-source-dirs:
-      src
+  hs-source-dirs: src
   exposed-modules:
       Test.Hspec.Wai.JSON
   build-depends:
@@ -31,18 +36,19 @@ library
     , aeson
     , aeson-qq >= 0.7.3
     , case-insensitive
+  ghc-options: -Wall
+  default-language: Haskell2010
 
 test-suite spec
-  type:
-      exitcode-stdio-1.0
-  ghc-options:
-      -Wall
-  hs-source-dirs:
-      test
-  main-is:
-      Spec.hs
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Spec.hs
+  other-modules:
+      Test.Hspec.Wai.JSONSpec
   build-depends:
       base == 4.*
     , hspec-wai-json
     , hspec-wai
     , hspec
+  ghc-options: -Wall
+  default-language: Haskell2010
