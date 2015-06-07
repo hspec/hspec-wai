@@ -59,10 +59,14 @@ instance FromValue ResponseMatcher where
   fromValue v = ResponseMatcher 200 [MatchHeader p] (Just body)
     where
       body = fromValue v
+
       permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
+
       addIfASCII h = if BL.all (< 128) body then (h :) else id
-      ciHeaderFields = map (second CI.mk)
-      p headers = if any (`elem` ciHeaderFields permissibleHeaders) (ciHeaderFields headers)
+
+      mkCI = map (second CI.mk)
+
+      p headers = if any (`elem` mkCI permissibleHeaders) (mkCI headers)
         then Nothing
         else (Just . unlines) ("missing header:" : (intersperse "  OR" $ map formatHeader permissibleHeaders))
 
