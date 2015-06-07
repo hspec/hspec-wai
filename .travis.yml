@@ -1,11 +1,11 @@
 language: haskell
 
 install:
-  - cabal install doctest markdown-unlit
+  - cabal install --only-dependencies --enable-tests hspec-wai.cabal hspec-wai-json/hspec-wai-json.cabal --max-backjumps=-1
+  - cabal install scotty doctest markdown-unlit --max-backjumps=-1
 
 script:
-  -                      (cabal install --only-dependencies --enable-tests && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test && cabal sdist && cabal install dist/hspec-wai-*.tar.gz)
-  - (cd hspec-wai-json && cabal install --only-dependencies --enable-tests && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test && cabal sdist && cabal install dist/hspec-wai-*.tar.gz)
+  -                      (cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test && cabal sdist && cabal install dist/hspec-wai-*.tar.gz)
+  - (cd hspec-wai-json && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test && cabal sdist && cabal install dist/hspec-wai-*.tar.gz)
   - doctest -isrc hspec-wai-json/src/Test/Hspec/Wai/JSON.hs
-  - cabal install scotty
   - ghc --make -Wall -Werror -pgmLmarkdown-unlit README.lhs
