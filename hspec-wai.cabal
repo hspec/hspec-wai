@@ -39,15 +39,18 @@ library
     , transformers
     , case-insensitive
     , http-types
+    , network
     , wai >= 3
     , wai-extra >= 3
+    , warp
     , hspec-core == 2.*
     , hspec-expectations
     , QuickCheck
   exposed-modules:
       Test.Hspec.Wai
-      Test.Hspec.Wai.QuickCheck
       Test.Hspec.Wai.Internal
+      Test.Hspec.Wai.QuickCheck
+      Test.Hspec.Wai.Server
   other-modules:
       Test.Hspec.Wai.Matcher
       Test.Hspec.Wai.Util
@@ -68,20 +71,26 @@ test-suite spec
     , transformers
     , case-insensitive
     , http-types
+    , network
     , wai >= 3
     , wai-extra >= 3
+    , warp
     , hspec-core == 2.*
     , hspec-expectations
     , QuickCheck
     , hspec
     , QuickCheck
+    , process
+    , silently
   other-modules:
       Test.Hspec.Wai
       Test.Hspec.Wai.Internal
       Test.Hspec.Wai.Matcher
       Test.Hspec.Wai.QuickCheck
+      Test.Hspec.Wai.Server
       Test.Hspec.Wai.Util
       Test.Hspec.Wai.MatcherSpec
+      Test.Hspec.Wai.ServerSpec
       Test.Hspec.Wai.UtilSpec
       Test.Hspec.WaiSpec
   default-language: Haskell2010
