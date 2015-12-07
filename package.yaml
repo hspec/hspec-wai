@@ -24,6 +24,7 @@ source-dirs: src
 
 dependencies:
   - base == 4.*
+  - base-compat
   - bytestring >= 0.10
   - text
   - transformers

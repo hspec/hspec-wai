@@ -6,10 +6,11 @@ module Test.Hspec.Wai.Matcher (
 , match
 ) where
 
-import           Control.Applicative
+import           Prelude ()
+import           Prelude.Compat
+
 import           Control.Monad
 import           Data.Maybe
-import           Data.Monoid
 import           Data.String
 import           Data.Text.Lazy.Encoding (encodeUtf8)
 import           Data.ByteString (ByteString)
