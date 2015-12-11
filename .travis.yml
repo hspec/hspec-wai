@@ -1,11 +1,40 @@
-language: haskell
+sudo: false
+
+language: c
+
+env:
+  - GHCVER=7.8.4
+  - GHCVER=7.10.2
+
+addons:
+  apt:
+    sources:
+      - hvr-ghc
+    packages:
+      - ghc-7.8.4
+      - ghc-7.10.2
+      - happy-1.19.5
+      - cabal-install-1.22
+
+before_install:
+  - (mkdir -p $HOME/.local/bin && cd $HOME/.local/bin && wget https://zalora-public.s3.amazonaws.com/tinc && chmod +x tinc)
+  - export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/1.22/bin:/opt/happy/1.19.5/bin:$PATH
+  - ghc --version
+  - cabal --version
+  - happy --version
+  - travis_retry cabal update
+  - sed -i 's/^jobs:/-- jobs:/' ${HOME}/.cabal/config
 
 install:
-  - cabal install --only-dependencies --enable-tests hspec-wai.cabal hspec-wai-json/hspec-wai-json.cabal --max-backjumps=-1
-  - cabal install scotty doctest markdown-unlit --max-backjumps=-1
+  - tinc
+  - (cd hspec-wai-json && tinc)
 
 script:
-  -                      (cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test && cabal sdist && cabal install dist/hspec-wai-*.tar.gz)
-  - (cd hspec-wai-json && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test && cabal sdist && cabal install dist/hspec-wai-*.tar.gz)
-  - doctest -isrc hspec-wai-json/src/Test/Hspec/Wai/JSON.hs
-  - ghc --make -Wall -Werror -pgmLmarkdown-unlit README.lhs
+  - cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test
+  - echo main | tinc ghci README.lhs
+  - (cd hspec-wai-json && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test)
+  - (cd hspec-wai-json && tinc exec doctest -isrc src/Test/Hspec/Wai/JSON.hs)
+
+cache:
+  directories:
+    - $HOME/.tinc/cache

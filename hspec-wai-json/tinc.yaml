@@ -1,0 +1,4 @@
+dependencies:
+  - doctest
+  - name: hspec-wai
+    path: ..
