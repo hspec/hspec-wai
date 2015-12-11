@@ -3,13 +3,13 @@
 -- see: https://github.com/sol/hpack
 
 name:             hspec-wai
-version:          0.6.3
+version:          0.6.4
 homepage:         https://github.com/hspec/hspec-wai#readme
 bug-reports:      https://github.com/hspec/hspec-wai/issues
 license:          MIT
 license-file:     LICENSE
 copyright:        (c) 2012-2014 Fujimura Daisuke,
-                  (c) 2014 Simon Hengel
+                  (c) 2014-2015 Simon Hengel
 author:           Fujimura Daisuke <me@fujimuradaisuke.com>,
                   Simon Hengel <sol@typeful.net>
 maintainer:       Fujimura Daisuke <me@fujimuradaisuke.com>,
