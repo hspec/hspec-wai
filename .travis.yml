@@ -31,9 +31,9 @@ install:
 
 script:
   - cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test
-  - echo main | tinc ghci README.lhs
+  - echo main | cabal exec -- ghci README.lhs
   - (cd hspec-wai-json && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test)
-  - (cd hspec-wai-json && tinc exec doctest -isrc src/Test/Hspec/Wai/JSON.hs)
+  - (cd hspec-wai-json && cabal exec -- doctest -isrc src/Test/Hspec/Wai/JSON.hs)
 
 cache:
   directories:
