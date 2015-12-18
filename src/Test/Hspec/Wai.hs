@@ -31,11 +31,12 @@ module Test.Hspec.Wai (
 , pendingWith
 ) where
 
+import           Control.Monad.Trans.Reader
 import           Data.Foldable
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
 import           Control.Monad.IO.Class
-import           Network.Wai (Request(..))
+import           Network.Wai (Application, Request(..))
 import           Network.HTTP.Types
 import           Network.Wai.Test hiding (request)
 import qualified Network.Wai.Test as Wai
@@ -49,9 +50,14 @@ import           Test.Hspec.Wai.Util
 import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
 
--- | An alias for `before`.
-with :: IO a -> SpecWith a -> Spec
-with = before
+with :: IO Application -> SpecWith RequestAction -> Spec
+with action = around $ \e -> do
+  app <- action
+  let r :: RequestAction
+      r method path headers body = runSession (Wai.srequest $ SRequest req body) app
+        where
+          req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path
+  e r
 
 -- | A lifted version of `Core.pending`.
 pending :: WaiSession ()
@@ -127,9 +133,9 @@ delete path = request methodDelete path [] ""
 -- | Perform a request to the application under test, with specified HTTP
 -- method, request path, headers and body.
 request :: Method -> ByteString -> [Header] -> LB.ByteString -> WaiSession SResponse
-request method path headers body = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req body)
-  where
-    req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path
+request method path headers body = WaiSession $ do
+  r <- ask
+  liftIO $ r method path headers body
 
 -- | Perform a @POST@ request to the application under test.
 --

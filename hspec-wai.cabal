@@ -38,6 +38,7 @@ library
     , text
     , transformers
     , case-insensitive
+    , http-client
     , http-types
     , network
     , wai >= 3
@@ -46,12 +47,15 @@ library
     , hspec-core == 2.*
     , hspec-expectations
     , QuickCheck
+    , data-default-class
+    , blaze-builder
   exposed-modules:
       Test.Hspec.Wai
       Test.Hspec.Wai.Internal
       Test.Hspec.Wai.QuickCheck
       Test.Hspec.Wai.Server
   other-modules:
+      Test.Hspec.Wai.Http
       Test.Hspec.Wai.Matcher
       Test.Hspec.Wai.Util
   default-language: Haskell2010
@@ -70,6 +74,7 @@ test-suite spec
     , text
     , transformers
     , case-insensitive
+    , http-client
     , http-types
     , network
     , wai >= 3
@@ -78,12 +83,15 @@ test-suite spec
     , hspec-core == 2.*
     , hspec-expectations
     , QuickCheck
+    , data-default-class
+    , blaze-builder
     , hspec
     , QuickCheck
     , process
     , silently
   other-modules:
       Test.Hspec.Wai
+      Test.Hspec.Wai.Http
       Test.Hspec.Wai.Internal
       Test.Hspec.Wai.Matcher
       Test.Hspec.Wai.QuickCheck

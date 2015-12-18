@@ -29,6 +29,7 @@ dependencies:
   - text
   - transformers
   - case-insensitive
+  - http-client
   - http-types
   - network
   - wai >= 3
@@ -37,6 +38,8 @@ dependencies:
   - hspec-core == 2.*
   - hspec-expectations
   - QuickCheck
+  - data-default-class
+  - blaze-builder
 
 library:
   exposed-modules:

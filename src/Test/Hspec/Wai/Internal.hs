@@ -5,9 +5,8 @@
 module Test.Hspec.Wai.Internal (
   WaiExpectation
 , WaiSession(..)
+, RequestAction
 , runWaiSession
-, withApplication
-, getApp
 , formatHeader
 ) where
 
@@ -16,7 +15,9 @@ import           Prelude.Compat
 
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Reader
-import           Network.Wai (Application)
+import           Data.ByteString (ByteString)
+import qualified Data.ByteString.Lazy as LB
+import           Network.HTTP.Types
 import           Network.Wai.Test hiding (request)
 import           Test.Hspec.Core.Spec
 import           Test.Hspec.Wai.Util (formatHeader)
@@ -28,18 +29,14 @@ type WaiExpectation = WaiSession ()
 
 -- | A <http://www.yesodweb.com/book/web-application-interface WAI> test
 -- session that carries the `Application` under test an some client state.
-newtype WaiSession a = WaiSession {unWaiSession :: Session a}
+newtype WaiSession a = WaiSession {unWaiSession :: ReaderT RequestAction IO a}
   deriving (Functor, Applicative, Monad, MonadIO)
 
-runWaiSession :: WaiSession a -> Application -> IO a
-runWaiSession = runSession . unWaiSession
+type RequestAction = Method -> ByteString -> [Header] -> LB.ByteString -> IO SResponse
 
-withApplication :: Application -> WaiSession a -> IO a
-withApplication = flip runWaiSession
+runWaiSession :: WaiSession a -> RequestAction -> IO a
+runWaiSession = runReaderT . unWaiSession
 
 instance Example WaiExpectation where
-  type Arg WaiExpectation = Application
+  type Arg WaiExpectation = RequestAction
   evaluateExample e p action = evaluateExample (action $ runWaiSession e) p ($ ())
-
-getApp :: WaiSession Application
-getApp = WaiSession ask
