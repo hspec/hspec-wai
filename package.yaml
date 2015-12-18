@@ -29,18 +29,24 @@ dependencies:
   - text
   - transformers
   - case-insensitive
+  - http-client
   - http-types
+  - network
   - wai >= 3
   - wai-extra >= 3
+  - warp
   - hspec-core == 2.*
   - hspec-expectations
   - QuickCheck
+  - data-default-class
+  - blaze-builder
 
 library:
   exposed-modules:
     - Test.Hspec.Wai
-    - Test.Hspec.Wai.QuickCheck
     - Test.Hspec.Wai.Internal
+    - Test.Hspec.Wai.QuickCheck
+    - Test.Hspec.Wai.Server
 
 tests:
   spec:
@@ -49,3 +55,5 @@ tests:
     dependencies:
       - hspec
       - QuickCheck
+      - process
+      - silently
