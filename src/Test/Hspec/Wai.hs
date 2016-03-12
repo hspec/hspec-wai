@@ -1,4 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE CPP #-}
+#include "with-location.h"
 -- | Have a look at the <https://github.com/hspec/hspec-wai#readme README> for
 -- an example of how to use this library.
 module Test.Hspec.Wai (
@@ -30,6 +32,8 @@ module Test.Hspec.Wai (
 , pending
 , pendingWith
 ) where
+
+with_location_imports
 
 import           Data.Foldable
 import           Data.ByteString (ByteString)
@@ -95,7 +99,7 @@ pendingWith = liftIO . Core.pendingWith
 --
 -- > get "/" `shouldRespondWith` "foo" {matchHeaders = ["Content-Type" <:> "text/plain"]}
 -- > -- matches if body is "foo", status is 200 and ther is a header field "Content-Type: text/plain"
-shouldRespondWith :: WaiSession SResponse -> ResponseMatcher -> WaiExpectation
+shouldRespondWith :: with_location WaiSession SResponse -> ResponseMatcher -> WaiExpectation
 shouldRespondWith action matcher = do
   r <- action
   forM_ (match r matcher) (liftIO . expectationFailure)

@@ -1,5 +1,5 @@
 name:             hspec-wai
-version:          0.6.4
+version:          0.6.5
 license:          MIT
 category:         Testing
 synopsis:         Experimental Hspec support for testing WAI applications
@@ -35,6 +35,7 @@ dependencies:
   - hspec-core == 2.*
   - hspec-expectations
   - QuickCheck
+  - with-location
 
 library:
   exposed-modules:
