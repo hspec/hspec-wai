@@ -1,2 +1,4 @@
 /dist/
 /hspec-wai-json/dist/
+.stack-work
+/hspec-wai-json/.stack-work
