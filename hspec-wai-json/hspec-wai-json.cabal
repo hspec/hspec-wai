@@ -34,6 +34,7 @@ library
     , bytestring
     , template-haskell
     , aeson
+    , http-types
     , aeson-qq >= 0.7.3
     , case-insensitive
   ghc-options: -Wall

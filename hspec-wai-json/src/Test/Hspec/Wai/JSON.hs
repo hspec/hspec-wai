@@ -2,7 +2,9 @@
 module Test.Hspec.Wai.JSON (
 -- $setup
   json
+, jsonPartial
 , FromValue(..)
+, FromPartialValue(..)
 ) where
 
 import           Control.Arrow (second)
@@ -11,6 +13,7 @@ import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as BL
 import           Data.Aeson (Value, encode)
 import           Data.Aeson.QQ
+import           Network.HTTP.Types
 import qualified Data.CaseInsensitive as CI
 import           Language.Haskell.TH.Quote
 
@@ -55,24 +58,32 @@ json = QuasiQuoter {
 class FromValue a where
   fromValue :: Value -> a
 
-instance FromValue ResponseMatcher where
-  fromValue v = ResponseMatcher 200 [MatchHeader p] (Just body) False
-    where
-      body = fromValue v
-
-      permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
-
+mkMatchHeader :: ByteString -> [Header] -> Maybe String
+mkMatchHeader body =
+  let permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
       addIfASCII h = if BL.all (< 128) body then (h :) else id
-
       mkCI = map (second CI.mk)
-
       p headers = if any (`elem` mkCI permissibleHeaders) (mkCI headers)
         then Nothing
         else (Just . unlines) ("missing header:" : (intersperse "  OR" $ map formatHeader permissibleHeaders))
+      in p
+
+instance FromValue ResponseMatcher where
+  fromValue v = ResponseMatcher 200 [MatchHeader (mkMatchHeader body)] (Just body) False
+    where
+      body = fromValue v
 
 instance FromValue ByteString where
   fromValue = encode
 
+-- | Like `json`, but when used as a `ResponseMatcher` it matches a response with
+--
+--  * a status code of @200@
+--
+--  * a @Content-Type@ header with value @application/json@
+--
+--  * the specified JSON contained wholly and intact in the response body
+--
 jsonPartial :: QuasiQuoter
 jsonPartial = QuasiQuoter {
   quoteExp = \input -> [|fromPartialValue $(quoteExp aesonQQ input)|]
@@ -85,19 +96,9 @@ class FromPartialValue a where
   fromPartialValue :: Value -> a
 
 instance FromPartialValue ResponseMatcher where
-  fromPartialValue v = ResponseMatcher 200 [MatchHeader p] (Just body) True
+  fromPartialValue v = ResponseMatcher 200 [MatchHeader (mkMatchHeader body)] (Just body) True
     where
-      body = fromValue v
-
-      permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
-
-      addIfASCII h = if BL.all (< 128) body then (h :) else id
-
-      mkCI = map (second CI.mk)
-
-      p headers = if any (`elem` mkCI permissibleHeaders) (mkCI headers)
-        then Nothing
-        else (Just . unlines) ("missing header:" : (intersperse "  OR" $ map formatHeader permissibleHeaders))
+      body = fromPartialValue v
 
 instance FromPartialValue ByteString where
   fromPartialValue = encode

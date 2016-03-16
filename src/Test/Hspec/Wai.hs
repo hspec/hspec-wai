@@ -103,6 +103,7 @@ shouldRespondWith action matcher = do
   r <- action
   forM_ (match r matcher) (liftIO . expectationFailure)
 
+-- | Like `shouldRespondWith`, but matches if the body contains the input string, wholly and intact.
 shouldContainInBody :: WithLocation (WaiSession SResponse -> ResponseMatcher -> WaiExpectation)
 shouldContainInBody action matcher = do
   r <- action
