@@ -10,29 +10,31 @@ import           Prelude ()
 import           Prelude.Compat
 
 import           Control.Monad
+import           Data.ByteString (ByteString)
+import qualified Data.ByteString.Char8 as C8
+import qualified Data.ByteString.Lazy as LB
 import           Data.Maybe
 import           Data.String
 import           Data.Text.Lazy.Encoding (encodeUtf8)
-import           Data.ByteString (ByteString)
-import qualified Data.ByteString.Lazy as LB
 import           Network.HTTP.Types
 import           Network.Wai.Test
 
 import           Test.Hspec.Wai.Util
 
 data ResponseMatcher = ResponseMatcher {
-  matchStatus :: Int
-, matchHeaders :: [MatchHeader]
-, matchBody :: Maybe LB.ByteString
+  matchStatus      :: Int
+, matchHeaders     :: [MatchHeader]
+, matchBody        :: Maybe LB.ByteString
+, matchPartialBody :: Bool
 }
 
 data MatchHeader = MatchHeader ([Header] -> Maybe String)
 
 instance IsString ResponseMatcher where
-  fromString s = ResponseMatcher 200 [] (Just . encodeUtf8 . fromString $ s)
+  fromString s = ResponseMatcher 200 [] (Just . encodeUtf8 . fromString $ s) False
 
 instance Num ResponseMatcher where
-  fromInteger n = ResponseMatcher (fromInteger n) [] Nothing
+  fromInteger n = ResponseMatcher (fromInteger n) [] Nothing False
   (+) =    error "ResponseMatcher does not support (+)"
   (-) =    error "ResponseMatcher does not support (-)"
   (*) =    error "ResponseMatcher does not support (*)"
@@ -40,14 +42,15 @@ instance Num ResponseMatcher where
   signum = error "ResponseMatcher does not support `signum`"
 
 match :: SResponse -> ResponseMatcher -> Maybe String
-match (SResponse (Status status _) headers body) (ResponseMatcher expectedStatus expectedHeaders expectedBody) = mconcat [
+match (SResponse (Status status _) headers body) (ResponseMatcher expectedStatus expectedHeaders expectedBody matchPartial) = mconcat [
     actualExpected "status mismatch:" (show status) (show expectedStatus) <$ guard (status /= expectedStatus)
   , checkHeaders headers expectedHeaders
   , expectedBody >>= matchBody_ body
   ]
   where
-    matchBody_ (toStrict -> actual) (toStrict -> expected) = actualExpected "body mismatch:" actual_ expected_ <$ guard (actual /= expected)
+    matchBody_ (toStrict -> actual) (toStrict -> expected) = actualExpected "body mismatch:" actual_ expected_ <$ theGuard
       where
+        theGuard = if matchPartial then guard (not $ expected `C8.isInfixOf` actual) else guard (actual /= expected)
         (actual_, expected_) = case (safeToString actual, safeToString expected) of
           (Just x, Just y) -> (x, y)
           _ -> (show actual, show expected)

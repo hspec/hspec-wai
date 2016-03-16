@@ -56,7 +56,7 @@ class FromValue a where
   fromValue :: Value -> a
 
 instance FromValue ResponseMatcher where
-  fromValue v = ResponseMatcher 200 [MatchHeader p] (Just body)
+  fromValue v = ResponseMatcher 200 [MatchHeader p] (Just body) False
     where
       body = fromValue v
 
@@ -72,3 +72,32 @@ instance FromValue ResponseMatcher where
 
 instance FromValue ByteString where
   fromValue = encode
+
+jsonPartial :: QuasiQuoter
+jsonPartial = QuasiQuoter {
+  quoteExp = \input -> [|fromPartialValue $(quoteExp aesonQQ input)|]
+, quotePat = const $ error "No quotePat defined for Test.Hspec.Wai.JSON.jsonPartial"
+, quoteType = const $ error "No quoteType defined for Test.Hspec.Wai.JSON.jsonPartial"
+, quoteDec = const $ error "No quoteDec defined for Test.Hspec.Wai.JSON.jsonPartial"
+}
+
+class FromPartialValue a where
+  fromPartialValue :: Value -> a
+
+instance FromPartialValue ResponseMatcher where
+  fromPartialValue v = ResponseMatcher 200 [MatchHeader p] (Just body) True
+    where
+      body = fromValue v
+
+      permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
+
+      addIfASCII h = if BL.all (< 128) body then (h :) else id
+
+      mkCI = map (second CI.mk)
+
+      p headers = if any (`elem` mkCI permissibleHeaders) (mkCI headers)
+        then Nothing
+        else (Just . unlines) ("missing header:" : (intersperse "  OR" $ map formatHeader permissibleHeaders))
+
+instance FromPartialValue ByteString where
+  fromPartialValue = encode
