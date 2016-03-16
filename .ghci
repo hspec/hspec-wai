@@ -1,4 +1,3 @@
 :set -pgmL markdown-unlit
 :set -isrc -itest
 :set -ihspec-wai-json/src
-:set -optP-includedist/build/autogen/cabal_macros.h

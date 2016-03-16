@@ -35,7 +35,7 @@ dependencies:
   - hspec-core == 2.*
   - hspec-expectations
   - QuickCheck
-  - with-location
+  - with-location >= 0.1.0
 
 library:
   exposed-modules:
