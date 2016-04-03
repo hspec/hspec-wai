@@ -22,12 +22,12 @@ import           Test.Hspec.Core.Spec
 import           Test.Hspec.Wai.Util (formatHeader)
 
 -- | An expectation in the `WaiSession` monad.  Failing expectations are
--- communicated through exceptions (similar to `Expectation` and
+-- communicated through exceptions (similar to `Test.Hspec.Expectations.Expectation` and
 -- `Test.HUnit.Base.Assertion`).
 type WaiExpectation = WaiSession ()
 
 -- | A <http://www.yesodweb.com/book/web-application-interface WAI> test
--- session that carries the `Application` under test an some client state.
+-- session that carries the `Application` under test and some client state.
 newtype WaiSession a = WaiSession {unWaiSession :: Session a}
   deriving (Functor, Applicative, Monad, MonadIO)
 
