@@ -21,6 +21,7 @@ module Test.Hspec.Wai (
 
 -- * Matching on the response
 , shouldRespondWith
+, shouldContainInBody
 , ResponseMatcher(..)
 , MatchHeader(..)
 , (<:>)
@@ -101,6 +102,12 @@ shouldRespondWith :: WithLocation (WaiSession SResponse -> ResponseMatcher -> Wa
 shouldRespondWith action matcher = do
   r <- action
   forM_ (match r matcher) (liftIO . expectationFailure)
+
+-- | Like `shouldRespondWith`, but matches if the body contains the input string, wholly and intact.
+shouldContainInBody :: WithLocation (WaiSession SResponse -> ResponseMatcher -> WaiExpectation)
+shouldContainInBody action matcher = do
+  r <- action
+  forM_ (match r matcher { matchPartialBody = True }) (liftIO . expectationFailure)
 
 -- | Perform a @GET@ request to the application under test.
 get :: ByteString -> WaiSession SResponse

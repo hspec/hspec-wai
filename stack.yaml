@@ -1,0 +1,6 @@
+resolver: lts-5.8
+packages:
+  - '.'
+  - 'hspec-wai-json'
+extra-deps:
+  - with-location-0.1.0
