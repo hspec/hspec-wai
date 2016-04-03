@@ -9,13 +9,14 @@ import           Control.Arrow (second)
 import           Data.List
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as BL
-import           Data.Aeson (Value, encode)
+import           Data.Aeson (Value, decode, encode)
 import           Data.Aeson.QQ
 import qualified Data.CaseInsensitive as CI
 import           Language.Haskell.TH.Quote
 
 import           Test.Hspec.Wai
 import           Test.Hspec.Wai.Internal (formatHeader)
+import           Test.Hspec.Wai.Matcher
 
 -- $setup
 -- The examples in this module assume that you have the @QuasiQuotes@ language
@@ -56,19 +57,22 @@ class FromValue a where
   fromValue :: Value -> a
 
 instance FromValue ResponseMatcher where
-  fromValue v = ResponseMatcher 200 [MatchHeader p] (Just body)
+  fromValue = ResponseMatcher 200 [MatchHeader p] . equalsJSON
     where
-      body = fromValue v
-
-      permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
-
-      addIfASCII h = if BL.all (< 128) body then (h :) else id
-
-      mkCI = map (second CI.mk)
-
-      p headers = if any (`elem` mkCI permissibleHeaders) (mkCI headers)
+      p headers body = if any (`elem` mkCI permissibleHeaders) (mkCI headers)
         then Nothing
         else (Just . unlines) ("missing header:" : (intersperse "  OR" $ map formatHeader permissibleHeaders))
+        where
+          mkCI = map (second CI.mk)
+          permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
+          addIfASCII h = if BL.all (< 128) body then (h :) else id
+
+equalsJSON :: Value -> MatchBody
+equalsJSON expected = MatchBody matcher
+  where
+    matcher headers actualBody = case decode actualBody of
+      Just actual | actual == expected -> Nothing
+      _ -> let MatchBody m = bodyEquals (encode expected) in m headers actualBody
 
 instance FromValue ByteString where
   fromValue = encode

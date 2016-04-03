@@ -42,6 +42,7 @@ library:
     - Test.Hspec.Wai
     - Test.Hspec.Wai.QuickCheck
     - Test.Hspec.Wai.Internal
+    - Test.Hspec.Wai.Matcher
 
 tests:
   spec:

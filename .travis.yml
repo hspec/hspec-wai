@@ -17,8 +17,9 @@ addons:
       - cabal-install-1.22
 
 before_install:
-  - (mkdir -p $HOME/.local/bin && cd $HOME/.local/bin && wget https://zalora-public.s3.amazonaws.com/tinc && chmod +x tinc)
-  - export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/1.22/bin:/opt/happy/1.19.5/bin:$PATH
+  - export PATH=$HOME/.tinc/bin:/opt/ghc/$GHCVER/bin:/opt/cabal/1.22/bin:/opt/happy/1.19.5/bin:$PATH
+  - curl -sSL https://github.com/sol/tinc/raw/master/get-tinc.sh | bash
+  - tinc --version
   - ghc --version
   - cabal --version
   - happy --version
@@ -31,9 +32,9 @@ install:
 
 script:
   - cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test
-  - echo main | cabal exec -- ghci README.lhs
   - (cd hspec-wai-json && cabal configure --enable-tests --ghc-options=-Werror && cabal build && cabal test)
   - (cd hspec-wai-json && cabal exec -- doctest -isrc src/Test/Hspec/Wai/JSON.hs)
+  - (cd hspec-wai-json && echo main | cabal exec -- ghci ../README.lhs)
 
 cache:
   directories:

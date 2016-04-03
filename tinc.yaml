@@ -1,5 +1,3 @@
 dependencies:
   - markdown-unlit
   - scotty
-  - name: hspec-wai-json
-    path: hspec-wai-json

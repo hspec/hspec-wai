@@ -1,4 +1,6 @@
 dependencies:
+  - markdown-unlit
+  - scotty
   - doctest
   - name: hspec-wai
     path: ..
