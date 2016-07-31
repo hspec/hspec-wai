@@ -50,12 +50,18 @@ spec = do
         it "ignores case" $ do
           match [("Content-Type", "application/JSON; charset=UTF-8")] `shouldBe` Nothing
 
+        it "doesn't require space before charset" $ do
+          match [("Content-Type", "application/json;charset=utf-8")] `shouldBe` Nothing
+
+        it "ignores extra whitespace" $ do
+          match [("Content-Type", "application/json;   charset=utf-8")] `shouldBe` Nothing
+
         it "rejects other headers" $ do
           match [("Content-Type", "foobar")] `shouldBe` (Just . unlines) [
-              "missing header:"
-            , "  Content-Type: application/json"
+              "wrong Content-Type value, should be:"
+            , "  application/json"
             , "  OR"
-            , "  Content-Type: application/json; charset=utf-8"
+            , "  application/json;charset=utf-8"
             ]
 
       context "when body is UTF-8" $ do
@@ -65,9 +71,9 @@ spec = do
 
         it "rejects 'application/json'" $ do
           match [("Content-Type", "application/json")] `shouldBe` (Just . unlines) [
-              "missing header:"
-            , "  Content-Type: application/json; charset=utf-8"
+              "wrong Content-Type value, should be:"
+            , "  application/json;charset=utf-8"
             ]
 
         it "accepts 'application/json; charset=utf-8'" $ do
-          match [("Content-Type", "application/json; charset=utf-8")] `shouldBe` Nothing
+          match [("Content-Type", "application/json;charset=utf-8")] `shouldBe` Nothing
