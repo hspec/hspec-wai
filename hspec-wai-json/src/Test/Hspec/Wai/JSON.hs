@@ -5,7 +5,6 @@ module Test.Hspec.Wai.JSON (
 , FromValue(..)
 ) where
 
-import           Control.Arrow (second)
 import           Data.List
 import           Data.Maybe (isJust)
 import           Data.ByteString.Lazy (ByteString)
@@ -16,7 +15,6 @@ import           Language.Haskell.TH.Quote
 import           Network.HTTP.Media
 
 import           Test.Hspec.Wai
-import           Test.Hspec.Wai.Internal (formatHeader)
 import           Test.Hspec.Wai.Matcher
 
 -- $setup
