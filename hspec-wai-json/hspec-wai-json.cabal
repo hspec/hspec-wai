@@ -33,6 +33,7 @@ library
       base == 4.*
     , hspec-wai == 0.6.*
     , bytestring
+    , http-media
     , template-haskell
     , aeson
     , aeson-qq >= 0.7.3
