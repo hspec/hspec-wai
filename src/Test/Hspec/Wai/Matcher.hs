@@ -41,11 +41,8 @@ bodyEquals :: Body -> MatchBody
 bodyEquals body = MatchBody (\_ actual -> bodyMatcher actual body)
   where
     bodyMatcher :: Body -> Body -> Maybe String
-    bodyMatcher (toStrict -> actual) (toStrict -> expected) = actualExpected "body mismatch:" actual_ expected_ <$ guard (actual /= expected)
-      where
-        (actual_, expected_) = case (safeToString actual, safeToString expected) of
-          (Just x, Just y) -> (x, y)
-          _ -> (show actual, show expected)
+    bodyMatcher actual expected = bodyMismatch "body mismatch:" actual expected
+                                      <$ guard (toStrict actual /= toStrict expected)
 
 bodyContains :: Body -> MatchBody
 bodyContains sub = MatchBody $ \_ full -> bodyMismatch "body substring search failed:" full sub
