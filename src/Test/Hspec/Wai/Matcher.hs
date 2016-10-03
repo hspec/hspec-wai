@@ -38,11 +38,8 @@ data MatchHeader = MatchHeader ([Header] -> Body -> Maybe String)
 data MatchBody = MatchBody ([Header] -> Body -> Maybe String)
 
 bodyEquals :: Body -> MatchBody
-bodyEquals body = MatchBody (\_ actual -> bodyMatcher actual body)
-  where
-    bodyMatcher :: Body -> Body -> Maybe String
-    bodyMatcher actual expected = bodyMismatch "body mismatch:" actual expected
-                                      <$ guard (toStrict actual /= toStrict expected)
+bodyEquals body = MatchBody $ \_ actual -> bodyMismatch "body mismatch:" actual body
+                                               <$ guard (toStrict actual /= toStrict body)
 
 bodyContains :: Body -> MatchBody
 bodyContains sub = MatchBody $ \_ full -> bodyMismatch "body substring search failed:" full sub
