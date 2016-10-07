@@ -1,4 +1,4 @@
--- This file has been generated from package.yaml by hpack version 0.11.2.
+-- This file has been generated from package.yaml by hpack version 0.15.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -42,9 +42,8 @@ library
     , wai >= 3
     , wai-extra >= 3
     , hspec-core == 2.*
-    , hspec-expectations
+    , hspec-expectations >= 0.8.0
     , QuickCheck
-    , with-location >= 0.1.0
   exposed-modules:
       Test.Hspec.Wai
       Test.Hspec.Wai.QuickCheck
@@ -60,7 +59,7 @@ test-suite spec
   main-is: Spec.hs
   hs-source-dirs:
       src
-    , test
+      test
   ghc-options: -Wall
   build-depends:
       base == 4.*
@@ -73,9 +72,8 @@ test-suite spec
     , wai >= 3
     , wai-extra >= 3
     , hspec-core == 2.*
-    , hspec-expectations
+    , hspec-expectations >= 0.8.0
     , QuickCheck
-    , with-location >= 0.1.0
     , hspec
     , QuickCheck
   other-modules:

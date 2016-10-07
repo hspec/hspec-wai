@@ -33,9 +33,8 @@ dependencies:
   - wai >= 3
   - wai-extra >= 3
   - hspec-core == 2.*
-  - hspec-expectations
+  - hspec-expectations >= 0.8.0
   - QuickCheck
-  - with-location >= 0.1.0
 
 library:
   exposed-modules:
