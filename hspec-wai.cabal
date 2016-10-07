@@ -3,7 +3,7 @@
 -- see: https://github.com/sol/hpack
 
 name:             hspec-wai
-version:          0.6.6
+version:          0.7.0
 homepage:         https://github.com/hspec/hspec-wai#readme
 bug-reports:      https://github.com/hspec/hspec-wai/issues
 license:          MIT
