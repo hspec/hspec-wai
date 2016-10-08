@@ -5,17 +5,13 @@ module Test.Hspec.Wai.JSON (
 , FromValue(..)
 ) where
 
-import           Control.Arrow (second)
-import           Data.List
 import           Data.ByteString.Lazy (ByteString)
-import qualified Data.ByteString.Lazy as BL
 import           Data.Aeson (Value, decode, encode)
 import           Data.Aeson.QQ
 import qualified Data.CaseInsensitive as CI
 import           Language.Haskell.TH.Quote
 
 import           Test.Hspec.Wai
-import           Test.Hspec.Wai.Internal (formatHeader)
 import           Test.Hspec.Wai.Matcher
 
 -- $setup
@@ -59,13 +55,12 @@ class FromValue a where
 instance FromValue ResponseMatcher where
   fromValue = ResponseMatcher 200 [MatchHeader p] . equalsJSON
     where
-      p headers body = if any (`elem` mkCI permissibleHeaders) (mkCI headers)
+      p headers _ = if any isJsonCT headers
         then Nothing
-        else (Just . unlines) ("missing header:" : (intersperse "  OR" $ map formatHeader permissibleHeaders))
+        else Just "wrong Content-Type value, should be: application/json"
         where
-          mkCI = map (second CI.mk)
-          permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
-          addIfASCII h = if BL.all (< 128) body then (h :) else id
+          isJsonCT ("Content-Type", ct) = CI.mk ct == "application/json"
+          isJsonCT _ = False
 
 equalsJSON :: Value -> MatchBody
 equalsJSON expected = MatchBody matcher

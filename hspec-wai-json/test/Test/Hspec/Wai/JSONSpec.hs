@@ -36,38 +36,27 @@ spec = do
     context "when matching Content-Type header" $ do
       let [MatchHeader matcher] = matchHeaders [json|{foo: 23}|]
 
-      context "when body is ASCII" $ do
-        let
-          body = [json|{foo: 23}|]
-          match = (`matcher` body)
+      let
+        body = [json|{foo: #{"\955" :: String}}|]
+        match = (`matcher` body)
+        wrongContentType = Just "wrong Content-Type value, should be: application/json"
 
-        it "accepts 'application/json'" $ do
-          match [("Content-Type", "application/json")] `shouldBe` Nothing
+      it "accepts 'application/json'" $ do
+        match [("Content-Type", "application/json")] `shouldBe` Nothing
 
-        it "accepts 'application/json; charset=utf-8'" $ do
-          match [("Content-Type", "application/json; charset=utf-8")] `shouldBe` Nothing
+      it "ignores case" $ do
+        match [("Content-Type", "application/JSON")] `shouldBe` Nothing
 
-        it "ignores case" $ do
-          match [("Content-Type", "application/JSON; charset=UTF-8")] `shouldBe` Nothing
+      it "rejects 'application/json; charset=utf-8'" $ do
+        match [("Content-Type", "application/json; charset=utf-8")] `shouldBe` wrongContentType
 
-        it "rejects other headers" $ do
-          match [("Content-Type", "foobar")] `shouldBe` (Just . unlines) [
-              "missing header:"
-            , "  Content-Type: application/json"
-            , "  OR"
-            , "  Content-Type: application/json; charset=utf-8"
-            ]
+        match [("Content-Type", "application/JSON; charset=UTF-8")] `shouldBe` wrongContentType
 
-      context "when body is UTF-8" $ do
-        let
-          body = [json|{foo: #{"\955" :: String}}|]
-          match = (`matcher` body)
+      it "doesn't require space before charset" $ do
+        match [("Content-Type", "application/json;charset=utf-8")] `shouldBe` wrongContentType
 
-        it "rejects 'application/json'" $ do
-          match [("Content-Type", "application/json")] `shouldBe` (Just . unlines) [
-              "missing header:"
-            , "  Content-Type: application/json; charset=utf-8"
-            ]
+      it "ignores extra whitespace" $ do
+        match [("Content-Type", "application/json;   charset=utf-8")] `shouldBe` wrongContentType
 
-        it "accepts 'application/json; charset=utf-8'" $ do
-          match [("Content-Type", "application/json; charset=utf-8")] `shouldBe` Nothing
+      it "rejects other headers" $ do
+        match [("Content-Type", "foobar")] `shouldBe` wrongContentType
