@@ -1,4 +1,4 @@
-## Changes in next version
+## Changes in 0.8.0
   - Reject header `application/json; charset=utf-8` when matching JSON
     (as per http://www.iana.org/assignments/media-types/application/json)
 
