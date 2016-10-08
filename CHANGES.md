@@ -1,3 +1,7 @@
+## Changes in next version
+  - Reject header `application/json; charset=utf-8` when matching JSON
+    (as per http://www.iana.org/assignments/media-types/application/json)
+
 ## Changes in 0.7.0
   - Add proper support for GHC 8 source locations
 

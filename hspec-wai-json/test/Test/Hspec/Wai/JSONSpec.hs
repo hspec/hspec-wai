@@ -45,29 +45,13 @@ spec = do
           match [("Content-Type", "application/json")] `shouldBe` Nothing
 
         it "accepts 'application/json; charset=utf-8'" $ do
-          match [("Content-Type", "application/json; charset=utf-8")] `shouldBe` Nothing
-
-        it "ignores case" $ do
-          match [("Content-Type", "application/JSON; charset=UTF-8")] `shouldBe` Nothing
+          match [("Content-Type", "application/json; charset=utf-8")] `shouldBe` (Just . unlines) [
+              "missing header:"
+            , "  Content-Type: application/json"
+            ]
 
         it "rejects other headers" $ do
           match [("Content-Type", "foobar")] `shouldBe` (Just . unlines) [
               "missing header:"
             , "  Content-Type: application/json"
-            , "  OR"
-            , "  Content-Type: application/json; charset=utf-8"
             ]
-
-      context "when body is UTF-8" $ do
-        let
-          body = [json|{foo: #{"\955" :: String}}|]
-          match = (`matcher` body)
-
-        it "rejects 'application/json'" $ do
-          match [("Content-Type", "application/json")] `shouldBe` (Just . unlines) [
-              "missing header:"
-            , "  Content-Type: application/json; charset=utf-8"
-            ]
-
-        it "accepts 'application/json; charset=utf-8'" $ do
-          match [("Content-Type", "application/json; charset=utf-8")] `shouldBe` Nothing

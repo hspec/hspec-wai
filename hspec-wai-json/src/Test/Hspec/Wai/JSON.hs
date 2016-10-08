@@ -5,17 +5,12 @@ module Test.Hspec.Wai.JSON (
 , FromValue(..)
 ) where
 
-import           Control.Arrow (second)
-import           Data.List
 import           Data.ByteString.Lazy (ByteString)
-import qualified Data.ByteString.Lazy as BL
 import           Data.Aeson (Value, decode, encode)
 import           Data.Aeson.QQ
-import qualified Data.CaseInsensitive as CI
 import           Language.Haskell.TH.Quote
 
 import           Test.Hspec.Wai
-import           Test.Hspec.Wai.Internal (formatHeader)
 import           Test.Hspec.Wai.Matcher
 
 -- $setup
@@ -57,15 +52,7 @@ class FromValue a where
   fromValue :: Value -> a
 
 instance FromValue ResponseMatcher where
-  fromValue = ResponseMatcher 200 [MatchHeader p] . equalsJSON
-    where
-      p headers body = if any (`elem` mkCI permissibleHeaders) (mkCI headers)
-        then Nothing
-        else (Just . unlines) ("missing header:" : (intersperse "  OR" $ map formatHeader permissibleHeaders))
-        where
-          mkCI = map (second CI.mk)
-          permissibleHeaders = addIfASCII ("Content-Type", "application/json") [("Content-Type", "application/json; charset=utf-8")]
-          addIfASCII h = if BL.all (< 128) body then (h :) else id
+  fromValue = ResponseMatcher 200 ["Content-Type" <:> "application/json"] . equalsJSON
 
 equalsJSON :: Value -> MatchBody
 equalsJSON expected = MatchBody matcher
