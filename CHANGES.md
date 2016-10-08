@@ -1,3 +1,9 @@
+## Changes in 0.7.0
+  - Add proper support for GHC 8 source locations
+
+## Changes in 0.6.6
+  - Depend on `with-location`
+
 ## Changes in 0.6.5
   - Add proper support for source locations
 
