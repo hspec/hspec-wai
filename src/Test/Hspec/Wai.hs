@@ -99,7 +99,7 @@ pendingWith = liftIO . Core.pendingWith
 -- `matchHeaders`:
 --
 -- > get "/" `shouldRespondWith` "foo" {matchHeaders = ["Content-Type" <:> "text/plain"]}
--- > -- matches if body is "foo", status is 200 and ther is a header field "Content-Type: text/plain"
+-- > -- matches if body is "foo", status is 200 and there is a header field "Content-Type: text/plain"
 shouldRespondWith :: HasCallStack => WaiSession SResponse -> ResponseMatcher -> WaiExpectation
 shouldRespondWith action matcher = do
   r <- action
