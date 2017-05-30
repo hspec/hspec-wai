@@ -1,3 +1,4 @@
 dependencies:
+  - aeson-qq
   - markdown-unlit
   - scotty

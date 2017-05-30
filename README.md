@@ -6,7 +6,7 @@ applications with [Hspec](http://hspec.github.io/)
 
 ## Example
 
-~~~ {.haskell}
+```haskell
 {-# LANGUAGE OverloadedStrings, QuasiQuotes #-}
 module Main (main) where
 
@@ -47,7 +47,7 @@ spec = with app $ do
   describe "GET /some-json" $ do
     it "responds with some JSON" $ do
       get "/some-json" `shouldRespondWith` [json|{foo: 23, bar: 42}|]
-~~~
+```
 
 ## Documentation
 
