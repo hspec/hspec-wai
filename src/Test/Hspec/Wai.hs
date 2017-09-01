@@ -141,6 +141,6 @@ request method path headers body = getApp >>= liftIO . runSession (Wai.srequest 
 -- The specified list of key-value pairs is encoded as
 -- @application/x-www-form-urlencoded@ and used as request body.
 --
--- In additon the @Content-Type@ is set to @application/x-www-form-urlencoded@.
+-- In addition the @Content-Type@ is set to @application/x-www-form-urlencoded@.
 postHtmlForm :: ByteString -> [(String, String)] -> WaiSession SResponse
 postHtmlForm path = request methodPost path [(hContentType, "application/x-www-form-urlencoded")] . formUrlEncodeQuery
