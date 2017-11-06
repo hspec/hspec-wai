@@ -48,6 +48,12 @@ spec = do
           match [("Content-Type", "application/json;charset=utf-8")]
             `shouldBe` Nothing
 
+        it "requires a content-type header" $ do
+          match [] `shouldBe` (Just. unlines) [
+              "missing header:"
+            , "  Content-Type: application/json"
+            ]
+
         it "rejects other headers" $ do
           match [("Content-Type", "foobar")] `shouldBe` (Just . unlines) [
               "missing header:"
