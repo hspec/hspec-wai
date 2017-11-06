@@ -12,6 +12,7 @@ import           Language.Haskell.TH.Quote
 
 import           Test.Hspec.Wai
 import           Test.Hspec.Wai.Matcher
+import           Test.Hspec.Wai.Util (formatHeader)
 
 -- $setup
 -- The examples in this module assume that you have the @QuasiQuotes@ language
@@ -52,7 +53,16 @@ class FromValue a where
   fromValue :: Value -> a
 
 instance FromValue ResponseMatcher where
-  fromValue = ResponseMatcher 200 ["Content-Type" <:> "application/json"] . equalsJSON
+  fromValue = ResponseMatcher 200 [matchHeader] . equalsJSON
+    where
+      matchHeader = MatchHeader $ \headers _body ->
+        case lookup "Content-Type" headers of
+          Just h | h `elem` values -> Nothing
+          _ -> Just $ unlines [ "missing header:"
+                              , formatHeader ("Content-Type", "application/json")
+                              ]
+      values = ["application/json", "application/json;charset=utf-8"]
+
 
 equalsJSON :: Value -> MatchBody
 equalsJSON expected = MatchBody matcher
