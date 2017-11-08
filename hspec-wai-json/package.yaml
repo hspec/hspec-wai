@@ -1,5 +1,5 @@
 name:             hspec-wai-json
-version:          0.8.0
+version:          0.9.0
 license:          MIT
 category:         Testing
 synopsis:         Testing JSON APIs with hspec-wai
@@ -22,7 +22,7 @@ library:
   source-dirs: src
   dependencies:
     - base == 4.*
-    - hspec-wai == 0.8.0
+    - hspec-wai == 0.9.0
     - bytestring
     - template-haskell
     - aeson

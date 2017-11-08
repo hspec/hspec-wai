@@ -6,13 +6,14 @@ module Test.Hspec.Wai.JSON (
 ) where
 
 import           Data.ByteString.Lazy (ByteString)
+import qualified Data.ByteString.Char8 as B
+import           Data.Char
 import           Data.Aeson (Value, decode, encode)
 import           Data.Aeson.QQ
 import           Language.Haskell.TH.Quote
 
 import           Test.Hspec.Wai
 import           Test.Hspec.Wai.Matcher
-import           Test.Hspec.Wai.Util (formatHeader)
 
 -- $setup
 -- The examples in this module assume that you have the @QuasiQuotes@ language
@@ -57,12 +58,33 @@ instance FromValue ResponseMatcher where
     where
       matchHeader = MatchHeader $ \headers _body ->
         case lookup "Content-Type" headers of
-          Just h | h `elem` values -> Nothing
-          _ -> Just $ unlines [ "missing header:"
-                              , formatHeader ("Content-Type", "application/json")
-                              ]
-      values = ["application/json", "application/json;charset=utf-8"]
+          Just h | isJSON h -> Nothing
+          _ -> Just $ unlines [
+              "missing header:"
+            , formatHeader ("Content-Type", "application/json")
+            ]
+      isJSON c = media == "application/json" && parameters `elem` ignoredParameters
+        where
+          (media, parameters) = let (m, p) = breakAt ';' c in (strip m, strip p)
 
+          -- Technically, no parameters are required nor optional for
+          -- application/json.  However, as charset=utf-8 is widely added by
+          -- other software and compliant recipients should ignore any charset
+          -- (as per http://www.iana.org/assignments/media-types/application/json)
+          -- we ignore charset=utf-8 here.
+          --
+          -- This is a decision made for pragmatism!
+          --
+          -- I'm still pretty much against ignoring any other charsets.  Adding
+          -- a charset parameter is non-standard and hspec-wai is not just a
+          -- compliant recipients but a testing software.  Hence I take the
+          -- stance that the job of a testing software is not just to accept
+          -- what a compliant client would accept but also to enforce standard
+          -- conformance.
+          ignoredParameters = ["", "charset=utf-8"]
+
+      breakAt c = fmap (B.drop 1) . B.break (== c)
+      strip = B.reverse . B.dropWhile isSpace . B.reverse . B.dropWhile isSpace
 
 equalsJSON :: Value -> MatchBody
 equalsJSON expected = MatchBody matcher

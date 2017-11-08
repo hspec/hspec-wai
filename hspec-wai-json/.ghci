@@ -1,2 +1,2 @@
 :set -pgmL markdown-unlit
-:set -isrc -itest -i../src
+:set -isrc -itest

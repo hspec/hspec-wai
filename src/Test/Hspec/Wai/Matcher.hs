@@ -7,6 +7,7 @@ module Test.Hspec.Wai.Matcher (
 , (<:>)
 , bodyEquals
 , match
+, formatHeader
 ) where
 
 import           Prelude ()
