@@ -1,4 +1,4 @@
--- This file has been generated from package.yaml by hpack version 0.15.0.
+-- This file has been generated from package.yaml by hpack version 0.19.3.
 --
 -- see: https://github.com/sol/hpack
 
@@ -32,18 +32,18 @@ library
       src
   ghc-options: -Wall
   build-depends:
-      base == 4.*
+      QuickCheck
+    , base ==4.*
     , base-compat
-    , bytestring >= 0.10
+    , bytestring >=0.10
+    , case-insensitive
+    , hspec-core ==2.*
+    , hspec-expectations >=0.8.0
+    , http-types
     , text
     , transformers
-    , case-insensitive
-    , http-types
-    , wai >= 3
-    , wai-extra >= 3
-    , hspec-core == 2.*
-    , hspec-expectations >= 0.8.0
-    , QuickCheck
+    , wai >=3
+    , wai-extra >=3
   exposed-modules:
       Test.Hspec.Wai
       Test.Hspec.Wai.QuickCheck
@@ -62,20 +62,19 @@ test-suite spec
       test
   ghc-options: -Wall
   build-depends:
-      base == 4.*
+      QuickCheck
+    , base ==4.*
     , base-compat
-    , bytestring >= 0.10
+    , bytestring >=0.10
+    , case-insensitive
+    , hspec
+    , hspec-core ==2.*
+    , hspec-expectations >=0.8.0
+    , http-types
     , text
     , transformers
-    , case-insensitive
-    , http-types
-    , wai >= 3
-    , wai-extra >= 3
-    , hspec-core == 2.*
-    , hspec-expectations >= 0.8.0
-    , QuickCheck
-    , hspec
-    , QuickCheck
+    , wai >=3
+    , wai-extra >=3
   other-modules:
       Test.Hspec.Wai
       Test.Hspec.Wai.Internal
@@ -85,4 +84,5 @@ test-suite spec
       Test.Hspec.Wai.MatcherSpec
       Test.Hspec.Wai.UtilSpec
       Test.Hspec.WaiSpec
+      Paths_hspec_wai
   default-language: Haskell2010
