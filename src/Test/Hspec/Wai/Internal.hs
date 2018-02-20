@@ -1,6 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeFamilies #-}
 module Test.Hspec.Wai.Internal (
   WaiExpectation
@@ -14,6 +13,7 @@ module Test.Hspec.Wai.Internal (
 import           Prelude ()
 import           Prelude.Compat
 
+import           Control.Monad.Catch (MonadCatch, MonadThrow)
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Reader
 import           Network.Wai (Application)
@@ -29,7 +29,7 @@ type WaiExpectation = WaiSession ()
 -- | A <http://www.yesodweb.com/book/web-application-interface WAI> test
 -- session that carries the `Application` under test and some client state.
 newtype WaiSession a = WaiSession {unWaiSession :: Session a}
-  deriving (Functor, Applicative, Monad, MonadIO)
+  deriving (Functor, Applicative, Monad, MonadIO, MonadThrow, MonadCatch)
 
 runWaiSession :: WaiSession a -> Application -> IO a
 runWaiSession = runSession . unWaiSession

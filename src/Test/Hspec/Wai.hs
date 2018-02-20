@@ -34,6 +34,7 @@ module Test.Hspec.Wai (
 , with
 , pending
 , pendingWith
+, runWaiSession
 ) where
 
 import           Data.Foldable
