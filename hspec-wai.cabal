@@ -68,6 +68,7 @@ test-suite spec
     , base-compat
     , bytestring >=0.10
     , case-insensitive
+    , exceptions >=0.1.1 && <1
     , hspec
     , hspec-core ==2.*
     , hspec-expectations >=0.8.0
