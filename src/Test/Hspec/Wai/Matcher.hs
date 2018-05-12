@@ -40,21 +40,16 @@ data MatchHeader = MatchHeader ([Header] -> Body -> Maybe String)
 data MatchBody = MatchBody ([Header] -> Body -> Maybe String)
 
 bodyEquals :: Body -> MatchBody
-bodyEquals body = MatchBody (\_ actual -> bodyMatcher actual body)
-  where
-    bodyMatcher :: Body -> Body -> Maybe String
-    bodyMatcher (toStrict -> actual) (toStrict -> expected) = actualExpected "body mismatch:" actual_ expected_ <$ guard (actual /= expected)
-      where
-        (actual_, expected_) = case (safeToString actual, safeToString expected) of
-          (Just x, Just y) -> (x, y)
-          _ -> (show actual, show expected)
+bodyEquals body = bodySatisfies body (==)
 
 bodyContains :: Body -> MatchBody
-bodyContains body = MatchBody (\_ actual -> bodyMatcher actual body)
+bodyContains body = bodySatisfies body SB.isInfixOf
+
+bodySatisfies :: Body -> (ByteString -> ByteString -> Bool) -> MatchBody
+bodySatisfies body prop = MatchBody (\_ actual -> bodyMatcher actual body)
   where
     bodyMatcher :: Body -> Body -> Maybe String
-    bodyMatcher (toStrict -> actual) (toStrict -> expected) = actualExpected "body mismatch:" actual_ expected_ <$
-                                                              guard (not $ expected `SB.isInfixOf` actual)
+    bodyMatcher (toStrict -> actual) (toStrict -> expected) = actualExpected "body mismatch:" actual_ expected_ <$ guard (not $ expected `prop` actual)
       where
         (actual_, expected_) = case (safeToString actual, safeToString expected) of
           (Just x, Just y) -> (x, y)
