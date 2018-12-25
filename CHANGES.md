@@ -1,3 +1,6 @@
+## Changes in 0.9.1
+  - Add `MonadFail` for `WaiSession` (GHC 8.6.1+)
+
 ## Changes in 0.9.0
   - Ignore `charset=utf-8` when matching JSON
     (as per http://www.iana.org/assignments/media-types/application/json)
