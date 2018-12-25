@@ -8,6 +8,7 @@ import           Network.HTTP.Types
 import           Network.Wai
 
 import           Test.Hspec.Wai
+import           Test.Hspec.Wai.Internal (withApplication)
 
 main :: IO ()
 main = hspec spec
@@ -28,32 +29,39 @@ expectRequest method path body headers req respond = do
 
 spec :: Spec
 spec = do
-  describe "get" $ with (return $ expectMethod methodGet) $
-    it "sends a get request" $
+  describe "WaiSession" $ do
+    it "has a MonadFail instance" $ do
+      withApplication undefined $ do
+        23 <- return (42 :: Int)
+        return ()
+      `shouldThrow` anyIOException
+
+  describe "get" $ with (return $ expectMethod methodGet) $ do
+    it "sends a get request" $ do
       get "/" `shouldRespondWith` 200
 
-  describe "post" $ with (return $ expectMethod methodPost) $
-    it "sends a post request" $
+  describe "post" $ with (return $ expectMethod methodPost) $ do
+    it "sends a post request" $ do
       post "/" "" `shouldRespondWith` 200
 
-  describe "put" $ with (return $ expectMethod methodPut) $
-    it "sends a put request" $
+  describe "put" $ with (return $ expectMethod methodPut) $ do
+    it "sends a put request" $ do
       put "/" "" `shouldRespondWith` 200
 
-  describe "options" $ with (return $ expectMethod methodOptions) $
-    it "sends an options request" $
+  describe "options" $ with (return $ expectMethod methodOptions) $ do
+    it "sends an options request" $ do
       options "/" `shouldRespondWith` 200
 
-  describe "delete" $ with (return $ expectMethod methodDelete) $
-    it "sends a delete request" $
+  describe "delete" $ with (return $ expectMethod methodDelete) $ do
+    it "sends a delete request" $ do
       delete "/" `shouldRespondWith` 200
 
-  describe "request" $ with (return $ expectRequest methodGet "/foo" body accept) $
-    it "sends method, path, headers, and body" $
+  describe "request" $ with (return $ expectRequest methodGet "/foo" body accept) $ do
+    it "sends method, path, headers, and body" $ do
       request methodGet "/foo" accept (BL.fromChunks [body]) `shouldRespondWith` 200
 
-  describe "postHtmlForm" $ with (return $ expectRequest methodPost "/foo" "foo=bar" formEncoded) $
-    it "sends a post request with form-encoded params" $
+  describe "postHtmlForm" $ with (return $ expectRequest methodPost "/foo" "foo=bar" formEncoded) $ do
+    it "sends a post request with form-encoded params" $ do
       postHtmlForm "/foo" [("foo", "bar")] `shouldRespondWith` 200
 
   where

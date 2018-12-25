@@ -1,16 +1,20 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE CPP #-}
 module Test.Hspec.Wai.UtilSpec (main, spec) where
 
 import           Test.Hspec
 import           Test.Hspec.QuickCheck
 import           Test.QuickCheck
 import           Test.Hspec.Wai.Util
-import           Data.Monoid
 import           Network.HTTP.Types (parseSimpleQuery)
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
+
+#if !MIN_VERSION_base(4,12,0)
+import           Data.Monoid
+#endif
 
 main :: IO ()
 main = hspec spec

@@ -1,6 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.19.3.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
 --
 -- see: https://github.com/sol/hpack
+--
+-- hash: 7e2f7bb9727dbda46a4e039a1c2116d5ed762e8eac4f6c90582c89530fdf737a
 
 name:             hspec-wai
 version:          0.9.0
@@ -15,11 +19,9 @@ author:           Fujimura Daisuke <me@fujimuradaisuke.com>,
 maintainer:       Fujimura Daisuke <me@fujimuradaisuke.com>,
                   Simon Hengel <sol@typeful.net>
 build-type:       Simple
-cabal-version:    >= 1.10
 category:         Testing
 synopsis:         Experimental Hspec support for testing WAI applications
 description:      Experimental Hspec support for testing WAI applications
-
 extra-source-files:
     changelog
 
