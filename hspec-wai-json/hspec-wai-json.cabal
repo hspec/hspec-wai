@@ -1,21 +1,24 @@
--- This file has been generated from package.yaml by hpack version 0.19.3.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
 --
 -- see: https://github.com/sol/hpack
+--
+-- hash: b69e885219351eccc359cc156851a2b05546adaab734c2e2917d71ea16bad081
 
 name:             hspec-wai-json
-version:          0.9.0
+version:          0.9.1
 homepage:         https://github.com/hspec/hspec-wai#readme
 bug-reports:      https://github.com/hspec/hspec-wai/issues
 license:          MIT
 license-file:     LICENSE
 copyright:        (c) 2012-2014 Fujimura Daisuke,
-                  (c) 2014 Simon Hengel
+                  (c) 2014-2018 Simon Hengel
 author:           Fujimura Daisuke <me@fujimuradaisuke.com>,
                   Simon Hengel <sol@typeful.net>
 maintainer:       Fujimura Daisuke <me@fujimuradaisuke.com>,
                   Simon Hengel <sol@typeful.net>
 build-type:       Simple
-cabal-version:    >= 1.10
 category:         Testing
 synopsis:         Testing JSON APIs with hspec-wai
 description:      Testing JSON APIs with hspec-wai
@@ -37,7 +40,7 @@ library
     , base ==4.*
     , bytestring
     , case-insensitive
-    , hspec-wai ==0.9.0
+    , hspec-wai ==0.9.1
     , template-haskell
   ghc-options: -Wall
   default-language: Haskell2010
