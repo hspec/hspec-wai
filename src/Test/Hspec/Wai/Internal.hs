@@ -22,7 +22,7 @@ import           Network.Wai.Test hiding (request)
 import           Test.Hspec.Core.Spec
 import           Test.Hspec.Wai.Util (formatHeader)
 
-#if MIN_VERSION_base(4,12,0)
+#if MIN_VERSION_base(4,9,0)
 import           Control.Monad.Fail
 #endif
 
@@ -35,7 +35,7 @@ type WaiExpectation = WaiSession ()
 -- session that carries the `Application` under test and some client state.
 newtype WaiSession a = WaiSession {unWaiSession :: Session a}
   deriving (Functor, Applicative, Monad, MonadIO
-#if MIN_VERSION_base(4,12,0)
+#if MIN_VERSION_base(4,9,0)
   , MonadFail
 #endif
   )

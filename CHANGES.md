@@ -1,3 +1,6 @@
+## Changes in 0.9.2
+  - Add `MonadFail` for `WaiSession` for older versions of base
+
 ## Changes in 0.9.1
   - Add `MonadFail` for `WaiSession` (GHC 8.6.1+)
 
