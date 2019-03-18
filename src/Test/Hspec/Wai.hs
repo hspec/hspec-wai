@@ -20,6 +20,9 @@ module Test.Hspec.Wai (
 -- ** Posting HTML forms
 , postHtmlForm
 
+-- ** Posting Json
+, postJson
+
 -- * Matching on the response
 , shouldRespondWith
 
@@ -144,3 +147,9 @@ request method path headers body = getApp >>= liftIO . runSession (Wai.srequest 
 -- In addition the @Content-Type@ is set to @application/x-www-form-urlencoded@.
 postHtmlForm :: ByteString -> [(String, String)] -> WaiSession SResponse
 postHtmlForm path = request methodPost path [(hContentType, "application/x-www-form-urlencoded")] . formUrlEncodeQuery
+
+-- | Perform a @POST@ request to the application under test.
+--
+-- The @Content-Type@ is set to @application/json@.
+postJson :: ByteString -> LB.ByteString -> WaiSession SResponse
+postJson path = request methodPost path [(hContentType, "application/json")]
