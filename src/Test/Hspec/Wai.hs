@@ -32,6 +32,8 @@ module Test.Hspec.Wai (
 -- * Helpers and re-exports
 , liftIO
 , with
+, withState
+, getState
 , pending
 , pendingWith
 ) where
@@ -54,16 +56,20 @@ import           Test.Hspec.Wai.Util
 import           Test.Hspec.Wai.Internal
 import           Test.Hspec.Wai.Matcher
 
--- | An alias for `before`.
-with :: IO a -> SpecWith a -> Spec
-with = before
+import           Network.Wai (Application)
+
+with :: IO Application -> SpecWith ((), Application) -> Spec
+with action = before ((,) () <$> action)
+
+withState :: IO (st, Application) -> SpecWith (st, Application) -> Spec
+withState = before
 
 -- | A lifted version of `Core.pending`.
-pending :: WaiSession ()
+pending :: WaiSession st ()
 pending = liftIO Core.pending
 
 -- | A lifted version of `Core.pendingWith`.
-pendingWith :: String -> WaiSession ()
+pendingWith :: String -> WaiSession st ()
 pendingWith = liftIO . Core.pendingWith
 
 -- | Set the expectation that a response matches a specified `ResponseMatcher`.
@@ -100,38 +106,38 @@ pendingWith = liftIO . Core.pendingWith
 --
 -- > get "/" `shouldRespondWith` "foo" {matchHeaders = ["Content-Type" <:> "text/plain"]}
 -- > -- matches if body is "foo", status is 200 and there is a header field "Content-Type: text/plain"
-shouldRespondWith :: HasCallStack => WaiSession SResponse -> ResponseMatcher -> WaiExpectation
+shouldRespondWith :: HasCallStack => WaiSession st SResponse -> ResponseMatcher -> WaiExpectation st
 shouldRespondWith action matcher = do
   r <- action
   forM_ (match r matcher) (liftIO . expectationFailure)
 
 -- | Perform a @GET@ request to the application under test.
-get :: ByteString -> WaiSession SResponse
+get :: ByteString -> WaiSession st SResponse
 get path = request methodGet path [] ""
 
 -- | Perform a @POST@ request to the application under test.
-post :: ByteString -> LB.ByteString -> WaiSession SResponse
+post :: ByteString -> LB.ByteString -> WaiSession st SResponse
 post path = request methodPost path []
 
 -- | Perform a @PUT@ request to the application under test.
-put :: ByteString -> LB.ByteString -> WaiSession SResponse
+put :: ByteString -> LB.ByteString -> WaiSession st SResponse
 put path = request methodPut path []
 
 -- | Perform a @PATCH@ request to the application under test.
-patch :: ByteString -> LB.ByteString -> WaiSession SResponse
+patch :: ByteString -> LB.ByteString -> WaiSession st SResponse
 patch path = request methodPatch path []
 
 -- | Perform an @OPTIONS@ request to the application under test.
-options :: ByteString -> WaiSession SResponse
+options :: ByteString -> WaiSession st SResponse
 options path = request methodOptions path [] ""
 
 -- | Perform a @DELETE@ request to the application under test.
-delete :: ByteString -> WaiSession SResponse
+delete :: ByteString -> WaiSession st SResponse
 delete path = request methodDelete path [] ""
 
 -- | Perform a request to the application under test, with specified HTTP
 -- method, request path, headers and body.
-request :: Method -> ByteString -> [Header] -> LB.ByteString -> WaiSession SResponse
+request :: Method -> ByteString -> [Header] -> LB.ByteString -> WaiSession st SResponse
 request method path headers body = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req body)
   where
     req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path
@@ -142,5 +148,5 @@ request method path headers body = getApp >>= liftIO . runSession (Wai.srequest 
 -- @application/x-www-form-urlencoded@ and used as request body.
 --
 -- In addition the @Content-Type@ is set to @application/x-www-form-urlencoded@.
-postHtmlForm :: ByteString -> [(String, String)] -> WaiSession SResponse
+postHtmlForm :: ByteString -> [(String, String)] -> WaiSession st SResponse
 postHtmlForm path = request methodPost path [(hContentType, "application/x-www-form-urlencoded")] . formUrlEncodeQuery
