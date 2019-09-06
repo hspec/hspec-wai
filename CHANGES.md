@@ -1,3 +1,6 @@
+## Changes in 0.10.0
+  - Add support for custom state
+
 ## Changes in 0.9.2
   - Add `MonadFail` for `WaiSession` for older versions of base
 
