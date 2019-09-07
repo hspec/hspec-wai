@@ -38,6 +38,9 @@ module Test.Hspec.Wai (
 , pendingWith
 ) where
 
+import           Prelude ()
+import           Prelude.Compat
+
 import           Data.Foldable
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
