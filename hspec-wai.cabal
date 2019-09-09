@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 811a23841d28e2d55f76be822fe6c98b2a677f409a68b8e8c997c594712c834c
+-- hash: cdec1913966ee86da27fb743e19bf06bc5822fe4611e017391f8d476ef5a6cc5
 
 name:             hspec-wai
-version:          0.10.0
+version:          0.10.1
 homepage:         https://github.com/hspec/hspec-wai#readme
 bug-reports:      https://github.com/hspec/hspec-wai/issues
 license:          MIT

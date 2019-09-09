@@ -1,3 +1,6 @@
+## Changes in 0.10.1
+  - Fix the build on GHC <7.10
+
 ## Changes in 0.10.0
   - Add support for custom state
 
