@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e4a822f5607da7dba06f4ee313bdb12f488e2c61de4bddc0c52ed1412993332a
+-- hash: b5b7f0dd6b33dbd56123cbe9943e7aa057c9670ccb333daa3c8143d634aaebbe
 
 name:             hspec-wai-json
-version:          0.10.0
+version:          0.10.1
 homepage:         https://github.com/hspec/hspec-wai#readme
 bug-reports:      https://github.com/hspec/hspec-wai/issues
 license:          MIT
@@ -40,7 +40,7 @@ library
     , base ==4.*
     , bytestring
     , case-insensitive
-    , hspec-wai ==0.10.0
+    , hspec-wai ==0.10.1
     , template-haskell
   ghc-options: -Wall
   default-language: Haskell2010
