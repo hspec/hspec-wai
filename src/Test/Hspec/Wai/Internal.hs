@@ -2,6 +2,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE CPP #-}
 module Test.Hspec.Wai.Internal (
   WaiExpectation
 , WaiSession(..)
@@ -21,6 +22,10 @@ import           Network.Wai.Test hiding (request)
 import           Test.Hspec.Core.Spec
 import           Test.Hspec.Wai.Util (formatHeader)
 
+#if MIN_VERSION_base(4,9,0)
+import           Control.Monad.Fail
+#endif
+
 -- | An expectation in the `WaiSession` monad.  Failing expectations are
 -- communicated through exceptions (similar to `Test.Hspec.Expectations.Expectation` and
 -- `Test.HUnit.Base.Assertion`).
@@ -29,7 +34,11 @@ type WaiExpectation = WaiSession ()
 -- | A <http://www.yesodweb.com/book/web-application-interface WAI> test
 -- session that carries the `Application` under test and some client state.
 newtype WaiSession a = WaiSession {unWaiSession :: Session a}
-  deriving (Functor, Applicative, Monad, MonadIO)
+  deriving (Functor, Applicative, Monad, MonadIO
+#if MIN_VERSION_base(4,9,0)
+  , MonadFail
+#endif
+  )
 
 runWaiSession :: WaiSession a -> Application -> IO a
 runWaiSession = runSession . unWaiSession

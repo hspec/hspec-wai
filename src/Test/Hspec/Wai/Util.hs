@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE CPP #-}
 module Test.Hspec.Wai.Util where
 
 import           Control.Monad
-import           Data.Monoid
 import           Data.Maybe
 import           Data.List
 import           Data.Word
@@ -18,6 +18,10 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.CaseInsensitive as CI
 import           Network.HTTP.Types
+
+#if !MIN_VERSION_base(4,11,0)
+import           Data.Monoid
+#endif
 
 formatHeader :: Header -> String
 formatHeader header@(name, value) = "  " ++ fromMaybe (show header) (safeToString $ B8.concat [CI.original name, ": ", value])
