@@ -1,13 +1,13 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.34.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: cdec1913966ee86da27fb743e19bf06bc5822fe4611e017391f8d476ef5a6cc5
+-- hash: 312ebd894b8cdd81b2189dd55e30feff3ab9c6f217be65388d1d88a85a37d91e
 
 name:             hspec-wai
-version:          0.10.1
+version:          0.11.0
 homepage:         https://github.com/hspec/hspec-wai#readme
 bug-reports:      https://github.com/hspec/hspec-wai/issues
 license:          MIT

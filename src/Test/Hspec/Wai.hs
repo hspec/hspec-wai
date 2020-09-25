@@ -45,6 +45,7 @@ import           Data.Foldable
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
 import           Control.Monad.IO.Class
+import           Control.Monad.Trans.Class (lift)
 import           Network.Wai (Request(..))
 import           Network.HTTP.Types
 import           Network.Wai.Test hiding (request)
@@ -141,7 +142,7 @@ delete path = request methodDelete path [] ""
 -- | Perform a request to the application under test, with specified HTTP
 -- method, request path, headers and body.
 request :: Method -> ByteString -> [Header] -> LB.ByteString -> WaiSession st SResponse
-request method path headers body = getApp >>= liftIO . runSession (Wai.srequest $ SRequest req body)
+request method path headers = WaiSession . lift . Wai.srequest . SRequest req
   where
     req = setPath defaultRequest {requestMethod = method, requestHeaders = headers} path
 
