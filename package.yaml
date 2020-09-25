@@ -23,7 +23,7 @@ ghc-options: -Wall
 source-dirs: src
 
 dependencies:
-  - base == 4.*
+  - base >= 4.9.1.0
   - base-compat
   - bytestring >= 0.10
   - text
@@ -48,5 +48,6 @@ tests:
     source-dirs: test
     main: Spec.hs
     dependencies:
+      - wai >= 3.2.2
       - hspec
       - QuickCheck

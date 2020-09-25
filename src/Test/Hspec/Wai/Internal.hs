@@ -14,9 +14,6 @@ module Test.Hspec.Wai.Internal (
 , formatHeader
 ) where
 
-import           Prelude ()
-import           Prelude.Compat
-
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Class
 import           Control.Monad.Trans.Reader

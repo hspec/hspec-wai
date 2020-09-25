@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 312ebd894b8cdd81b2189dd55e30feff3ab9c6f217be65388d1d88a85a37d91e
+-- hash: 0a4a84d03c2b0d10ba3ddd24c8026c5be6f17371b7939e06d5a1bfa1d44526e5
 
 name:             hspec-wai
 version:          0.11.0
@@ -35,7 +35,7 @@ library
   ghc-options: -Wall
   build-depends:
       QuickCheck
-    , base ==4.*
+    , base >=4.9.1.0
     , base-compat
     , bytestring >=0.10
     , case-insensitive
@@ -65,7 +65,7 @@ test-suite spec
   ghc-options: -Wall
   build-depends:
       QuickCheck
-    , base ==4.*
+    , base >=4.9.1.0
     , base-compat
     , bytestring >=0.10
     , case-insensitive
@@ -75,7 +75,7 @@ test-suite spec
     , http-types
     , text
     , transformers
-    , wai >=3
+    , wai >=3.2.2
     , wai-extra >=3
   other-modules:
       Test.Hspec.Wai
