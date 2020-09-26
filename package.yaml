@@ -23,7 +23,7 @@ ghc-options: -Wall
 source-dirs: src
 
 dependencies:
-  - base >= 4.9.1.0
+  - base >= 4.9.1.0 && < 5
   - base-compat
   - bytestring >= 0.10
   - text

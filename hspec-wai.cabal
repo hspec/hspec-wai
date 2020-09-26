@@ -3,8 +3,6 @@ cabal-version: 1.12
 -- This file has been generated from package.yaml by hpack version 0.34.2.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 0a4a84d03c2b0d10ba3ddd24c8026c5be6f17371b7939e06d5a1bfa1d44526e5
 
 name:             hspec-wai
 version:          0.11.0
@@ -35,7 +33,7 @@ library
   ghc-options: -Wall
   build-depends:
       QuickCheck
-    , base >=4.9.1.0
+    , base >=4.9.1.0 && <5
     , base-compat
     , bytestring >=0.10
     , case-insensitive
@@ -65,7 +63,7 @@ test-suite spec
   ghc-options: -Wall
   build-depends:
       QuickCheck
-    , base >=4.9.1.0
+    , base >=4.9.1.0 && <5
     , base-compat
     , bytestring >=0.10
     , case-insensitive
