@@ -64,7 +64,12 @@ spec = do
     it "sends a post request with form-encoded params" $ do
       postHtmlForm "/foo" [("foo", "bar")] `shouldRespondWith` 200
 
+  describe "postJson" $ with (return $ expectRequest methodPost "/foo" body jsonContentType) $ do
+    it "sends a post request with json" $ do
+      postJson "/foo" "{\"foo\": 1}" `shouldRespondWith` 200
+
   where
     accept = [(hAccept, "application/json")]
     body = "{\"foo\": 1}"
     formEncoded = [(hContentType, "application/x-www-form-urlencoded")]
+    jsonContentType = [(hContentType, "application/json")]
