@@ -19,6 +19,10 @@ spec = do
         SResponse status200 [] "" `match` 200
           `shouldBe` Nothing
 
+      it "returns Nothing on substring match" $ do
+        SResponse status200 [] "foo\nbar" `match` 200 { matchBody = bodyContains "o\nba" }
+          `shouldBe` Nothing
+
     context "when status does not match" $ do
       it "returns an error message" $ do
         SResponse status404 [] "" `match` 200
@@ -35,6 +39,14 @@ spec = do
             "body mismatch:"
           , "  expected: bar"
           , "  but got:  foo"
+          ]
+
+      it "returns an error message on substring match" $ do
+        SResponse status200 [] "bar" `match` 200 { matchBody = bodyContains "oax" }
+          `shouldBe` (Just . unlines) [
+            "body mismatch:"
+          , "  expected: oax"
+          , "  but got:  bar"
           ]
 
       context "when one body contains unsafe characters" $ do
