@@ -80,3 +80,17 @@ spec = do
             , "the actual headers were:"
             , "  Content-Length: 23"
             ]
+
+    context "when body has a partial match" $ do
+      it "returns Nothing" $ do
+        SResponse status200 [] "@=.#" `match` 200 { matchBody = bodyContains "=." }
+          `shouldBe` Nothing
+
+    context "when body has NO partial match" $ do
+      it "returns an error message" $ do
+        SResponse status200 [] "@.#" `match` 200 { matchBody = bodyContains "=." }
+          `shouldBe` (Just . unlines) [
+            "body substring search failed:"
+          , "  expected: =."
+          , "  but got:  @.#"
+          ]
