@@ -1,3 +1,4 @@
+{-# LANGUAGE PackageImports #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ConstraintKinds #-}
@@ -39,7 +40,7 @@ module Test.Hspec.Wai (
 ) where
 
 import           Prelude ()
-import           Prelude.Compat
+import "base-compat" Prelude.Compat
 
 import           Data.Foldable
 import           Data.ByteString (ByteString)

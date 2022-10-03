@@ -51,3 +51,4 @@ tests:
       - wai >= 3.2.2
       - hspec
       - QuickCheck
+    build-tools: hspec-discover
