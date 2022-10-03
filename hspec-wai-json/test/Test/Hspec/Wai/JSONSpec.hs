@@ -1,6 +1,7 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 module Test.Hspec.Wai.JSONSpec (main, spec) where
 
 import           Test.Hspec

@@ -1,3 +1,4 @@
+{-# LANGUAGE PackageImports #-}
 {-# LANGUAGE ViewPatterns #-}
 module Test.Hspec.Wai.Matcher (
   ResponseMatcher(..)
@@ -11,7 +12,7 @@ module Test.Hspec.Wai.Matcher (
 ) where
 
 import           Prelude ()
-import           Prelude.Compat
+import "base-compat" Prelude.Compat
 
 import           Control.Monad
 import           Data.Maybe
