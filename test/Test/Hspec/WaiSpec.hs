@@ -23,7 +23,7 @@ expectRequest method path body headers req respond = do
   requestMethod req `shouldBe` method
   rawPathInfo req `shouldBe` path
   requestHeaders req `shouldBe` headers
-  rawBody <- requestBody req
+  rawBody <- getRequestBodyChunk req
   rawBody `shouldBe` body
   respond $ responseLBS status200 [] ""
 

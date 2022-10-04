@@ -1,3 +1,13 @@
+## Changes in 0.11.0
+  - Add support for cookies
+  - Drop support for GHC <8
+
+## Changes in 0.10.1
+  - Fix the build on GHC <7.10
+
+## Changes in 0.10.0
+  - Add support for custom state
+
 ## Changes in 0.9.2
   - Add `MonadFail` for `WaiSession` for older versions of base
 

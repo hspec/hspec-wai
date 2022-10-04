@@ -1,13 +1,11 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.0.
+-- This file has been generated from package.yaml by hpack version 0.34.3.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 8cd8444fb81ce20f9ac1bc6ef05bcaf0c7bfec1e15deefc045dbe71f1830a92b
 
 name:             hspec-wai
-version:          0.9.2
+version:          0.11.1
 homepage:         https://github.com/hspec/hspec-wai#readme
 bug-reports:      https://github.com/hspec/hspec-wai/issues
 license:          MIT
@@ -35,7 +33,7 @@ library
   ghc-options: -Wall
   build-depends:
       QuickCheck
-    , base ==4.*
+    , base >=4.9.1.0 && <5
     , base-compat
     , bytestring >=0.10
     , case-insensitive
@@ -65,7 +63,7 @@ test-suite spec
   ghc-options: -Wall
   build-depends:
       QuickCheck
-    , base ==4.*
+    , base >=4.9.1.0 && <5
     , base-compat
     , bytestring >=0.10
     , case-insensitive
@@ -75,7 +73,7 @@ test-suite spec
     , http-types
     , text
     , transformers
-    , wai >=3
+    , wai >=3.2.2
     , wai-extra >=3
   other-modules:
       Test.Hspec.Wai
