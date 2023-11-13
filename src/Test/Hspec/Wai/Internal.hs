@@ -22,7 +22,7 @@ import           Network.Wai.Test hiding (request)
 import           Test.Hspec.Core.Spec
 import           Test.Hspec.Wai.Util (formatHeader)
 
-#if MIN_VERSION_base(4,9,0)
+#if MIN_VERSION_base(4,9,0) && !MIN_VERSION_base(4,13,0)
 import           Control.Monad.Fail
 #endif
 
