@@ -38,6 +38,36 @@ safeToString bs = do
 toStrict :: LB.ByteString -> ByteString
 toStrict = mconcat . LB.toChunks
 
+-- | Encode the body of a multipart form post
+--
+-- schema from : https://swagger.io/docs/specification/describing-request-body/multipart-requests/
+formMultipartQuery :: ByteString -- ^ part separator
+                   -> [(FileMeta, ByteString, ByteString, ByteString)] -- ^ (file metadata, field MIME type, field name, field contents)
+                   -> LB.ByteString
+formMultipartQuery sbs = Builder.toLazyByteString . mconcat . intersperse newline . map encodeFile
+  where
+    sep = Builder.byteString ("--" <> sbs)
+    newline = Builder.word8 (ord '\n')
+    kv k v = k <> ": " <> v
+    quoted x = Builder.byteString ("\"" <> x <> "\"")
+    encodeMPField FMFormField = mempty
+    encodeMPField (FMFile fname) = "; filename=" <> quoted fname
+    encodeFile (fieldMeta, ty, n, payload) = mconcat $ intersperse newline [
+      kv "Content-Disposition" ("form-data;" <> " name=" <> quoted n <> encodeMPField fieldMeta)
+      , kv "Content-Type" (Builder.byteString ty)
+      -- , newline
+      , Builder.byteString payload
+      , sep
+      ]
+
+
+data FileMeta = FMFormField -- ^ any form field except a file
+              | FMFile ByteString -- ^ file name
+
+
+ord :: Char -> Word8
+ord = fromIntegral . Char.ord
+
 formUrlEncodeQuery :: [(String, String)] -> LB.ByteString
 formUrlEncodeQuery = Builder.toLazyByteString . mconcat . intersperse amp . map encodePair
   where
@@ -76,9 +106,6 @@ formUrlEncodeQuery = Builder.toLazyByteString . mconcat . intersperse amp . map 
           || c == ord '.'
           || ord '0' <= c && c <= ord '9'
           || ord 'A' <= c && c <= ord 'Z'
-
-    ord :: Char -> Word8
-    ord = fromIntegral . Char.ord
 
     percentEncode :: Word8 -> Builder
     percentEncode n = percent <> hex hi <> hex lo

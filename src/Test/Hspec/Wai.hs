@@ -19,7 +19,12 @@ module Test.Hspec.Wai (
 , request
 
 -- ** Posting HTML forms
+  -- *** URL-encoded
 , postHtmlForm
+, postUrlEncodedForm
+-- *** Files
+, postMultipartForm
+, FileMeta(..)
 
 -- * Matching on the response
 , shouldRespondWith
@@ -153,5 +158,21 @@ request method path headers = WaiSession . lift . Wai.srequest . SRequest req
 -- @application/x-www-form-urlencoded@ and used as request body.
 --
 -- In addition the @Content-Type@ is set to @application/x-www-form-urlencoded@.
-postHtmlForm :: ByteString -> [(String, String)] -> WaiSession st SResponse
+postHtmlForm :: ByteString -- ^ path
+             -> [(String, String)] -> WaiSession st SResponse
 postHtmlForm path = request methodPost path [(hContentType, "application/x-www-form-urlencoded")] . formUrlEncodeQuery
+
+-- | Synonym for 'postHtmlForm'
+postUrlEncodedForm :: ByteString -- ^ path
+                   -> [(String, String)] -> WaiSession st SResponse
+postUrlEncodedForm = postHtmlForm
+
+-- | @POST@ a @multipart/form-data@ form which might include files.
+--
+-- The @Content-Type@ is set to @multipart/form-data; boundary=<bd>@ where @bd@ is the part separator without the @--@ prefix.
+postMultipartForm :: ByteString -- ^ path
+                  -> ByteString -- ^ part separator
+                  -> [(FileMeta, ByteString, ByteString, ByteString)] -- ^ (file metadata, field MIME type, field name, field contents)
+                  -> WaiSession st SResponse
+postMultipartForm path sbs =
+  request methodPost path [(hContentType, "multipart/form-data; boundary=" <> sbs)] . formMultipartQuery sbs
