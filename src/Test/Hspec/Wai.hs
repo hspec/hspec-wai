@@ -37,6 +37,7 @@ module Test.Hspec.Wai (
 , getState
 , pending
 , pendingWith
+, SResponse(..)
 ) where
 
 import           Prelude ()
