@@ -1,9 +1,8 @@
 packages:
-  hspec-wai.cabal
+  .
   hspec-wai-json
 
-package hspec-wai
+program-options
   ghc-options: -Werror
 
-package hspec-wai-json
-  ghc-options: -Werror
+tests: True

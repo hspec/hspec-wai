@@ -20,6 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: true
       matrix:
         os:
           - ubuntu-latest
@@ -32,28 +33,25 @@ jobs:
           - '9.0'
           - '9.2'
           - '9.4'
+          - '9.6'
+          - '9.8'
+          - '9.10'
+          - '9.12'
+          - '9.14'
         include:
           - os: macos-latest
             ghc: system
           - os: windows-latest
             ghc: system
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - uses: hspec/setup-haskell@v1
         with:
           ghc-version: ${{ matrix.ghc }}
 
-      - run: cabal update
-      - run: echo "::set-output name=version::`ghc --numeric-version`"
-        shell: bash
-        id: ghc
-      - uses: actions/cache@v3
+      - uses: sol/run-haskell-tests@v2
         with:
-          path: ${{ runner.os == 'Windows' && 'C:/cabal/store' || '~/.cabal/store' }}
-          key: ${{ runner.os }}-v2-${{ steps.ghc.outputs.version }}-${{ github.run_id }}
-          restore-keys: ${{ runner.os }}-v2-${{ steps.ghc.outputs.version }}-
-
-      - uses: sol/run-haskell-tests@v1
+          caching: true
 
   success:
     needs: build
@@ -64,6 +62,9 @@ jobs:
       - run: false
         if: needs.build.result != 'success'
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Check for trailing whitespace
         run: '! git grep -I "\s\+$"'
+
+      - run: curl -sSL https://raw.githubusercontent.com/sol/hpack/main/get-hpack.sh | bash
+      - run: hpack && git diff --exit-code
