@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.39.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -43,7 +43,7 @@ library
     , text
     , transformers
     , wai >=3
-    , wai-extra >=3
+    , wai-extra >=3.1.14
   exposed-modules:
       Test.Hspec.Wai
       Test.Hspec.Wai.QuickCheck
@@ -76,7 +76,7 @@ test-suite spec
     , text
     , transformers
     , wai >=3.2.2
-    , wai-extra >=3
+    , wai-extra >=3.1.14
   other-modules:
       Test.Hspec.Wai
       Test.Hspec.Wai.Internal
