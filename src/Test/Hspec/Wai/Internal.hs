@@ -1,6 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE CPP #-}
 module Test.Hspec.Wai.Internal (
@@ -12,15 +13,19 @@ module Test.Hspec.Wai.Internal (
 , getApp
 , getState
 , formatHeader
+, handleWai
 ) where
 
+import           Control.Exception (Exception, handle)
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Class
 import           Control.Monad.Trans.Reader
+import           Control.Monad.Trans.State
 import           Network.Wai (Application)
 import           Network.Wai.Test hiding (request)
 import           Test.Hspec.Core.Spec
 import           Test.Hspec.Wai.Util (formatHeader)
+
 
 #if MIN_VERSION_base(4,9,0) && !MIN_VERSION_base(4,13,0)
 import           Control.Monad.Fail
@@ -42,6 +47,13 @@ newtype WaiSession st a = WaiSession {unWaiSession :: ReaderT st Session a}
 
 runWaiSession :: WaiSession () a -> Application -> IO a
 runWaiSession action app = runWithState action ((), app)
+
+handleWai :: Exception e => (e -> IO a) -> WaiSession st a -> WaiSession st a
+handleWai k (WaiSession (ReaderT f)) = WaiSession $ ReaderT $ \st ->
+  ReaderT $ \app -> do
+    case flip runReaderT app $ f st of
+      StateT runSt -> StateT $ \s ->
+        handle (fmap (, s) . k) $ runSt s
 
 runWithState :: WaiSession st a -> (st, Application) -> IO a
 runWithState action (st, app) = runSession (flip runReaderT st $ unWaiSession action) app

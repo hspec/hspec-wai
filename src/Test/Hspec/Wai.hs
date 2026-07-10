@@ -37,6 +37,7 @@ module Test.Hspec.Wai (
 , getState
 , pending
 , pendingWith
+, annotate
 , SResponse(..)
 ) where
 
@@ -46,15 +47,17 @@ import "base-compat" Prelude.Compat
 import           Data.Foldable
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
+import           Control.Exception (throwIO)
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Class (lift)
 import           Network.Wai (Request(..))
 import           Network.HTTP.Types
 import           Network.Wai.Test hiding (request)
 import qualified Network.Wai.Test as Wai
+import           Test.HUnit.Lang (HUnitFailure(..), FailureReason(..))
 import           Test.Hspec.Expectations
 
-import           Test.Hspec.Core.Spec hiding (pending, pendingWith)
+import           Test.Hspec.Core.Spec hiding (pending, pendingWith, FailureReason(..))
 import qualified Test.Hspec.Core.Spec as Core
 import           Test.Hspec.Core.Hooks
 
@@ -73,6 +76,32 @@ withState = before
 -- | A lifted version of `Core.pending`.
 pending :: WaiSession st ()
 pending = liftIO Core.pending
+
+-- | -- If you have a test case that has multiple assertions, you can use the
+-- 'annotate' function to provide a string message that will be attached to the
+-- 'Expectation'.
+--
+-- @
+-- describe "annotate" $ do
+--   it "adds the message" $ do
+--     annotate "obvious falsehood" $ do
+--       True `shouldBe` False
+--
+-- ========>
+--
+-- 1) annotate, adds the message
+--       obvious falsehood
+--       expected: False
+--        but got: True
+-- @
+annotate :: String -> WaiSession st a -> WaiSession st a
+annotate message = handleWai $ \ (HUnitFailure loc reason) -> throwIO . HUnitFailure loc $ case reason of
+  Reason err -> Reason $ addMessage err
+  ExpectedButGot err expected got -> ExpectedButGot (Just $ maybe message addMessage err) expected got
+  where
+    addMessage err
+      | null err = message
+      | otherwise = message ++ "\n" ++ err
 
 -- | A lifted version of `Core.pendingWith`.
 pendingWith :: String -> WaiSession st ()
