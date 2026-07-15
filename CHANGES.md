@@ -1,3 +1,6 @@
+## Changes in 0.12.1
+  - Add `Test.Hspec.Wai.annotate`
+
 ## Changes in 0.12.0
   - Re-export `Network.Wai.Test.SResponse` from `Test.Hspec.Wai` (https://github.com/hspec/hspec-wai/issues/79)
 
