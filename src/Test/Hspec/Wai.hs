@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE PackageImports #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleContexts #-}
@@ -47,9 +48,12 @@ import "base-compat" Prelude.Compat
 import           Data.Foldable
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LB
-import           Control.Exception (throwIO)
+import           Control.Exception (Exception, handle, throwIO)
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Class (lift)
+import           Control.Monad.Trans.Reader
+import           Control.Monad.Trans.State (StateT(..))
+
 import           Network.Wai (Request(..))
 import           Network.HTTP.Types
 import           Network.Wai.Test hiding (request)
@@ -99,9 +103,17 @@ annotate message = handleWai $ \ (HUnitFailure loc reason) -> throwIO . HUnitFai
   Reason err -> Reason $ addMessage err
   ExpectedButGot err expected got -> ExpectedButGot (Just $ maybe message addMessage err) expected got
   where
+    addMessage :: String -> String
     addMessage err
       | null err = message
       | otherwise = message ++ "\n" ++ err
+
+    handleWai :: Exception e => (e -> IO a) -> WaiSession st a -> WaiSession st a
+    handleWai k (WaiSession (ReaderT f)) = WaiSession $ ReaderT $ \st ->
+      ReaderT $ \app -> do
+        case flip runReaderT app $ f st of
+          StateT runSt -> StateT $ \s ->
+            handle (fmap (, s) . k) $ runSt s
 
 -- | A lifted version of `Core.pendingWith`.
 pendingWith :: String -> WaiSession st ()
