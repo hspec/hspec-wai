@@ -64,7 +64,18 @@ spec = do
     it "sends a post request with form-encoded params" $ do
       postHtmlForm "/foo" [("foo", "bar")] `shouldRespondWith` 200
 
+  describe "postMultipartForm" $ with (return $ expectRequest methodPost "/foo" "Content-Disposition: form-data; name=\"id\"\nContent-Type: text/plain\n123e4567-e89b-12d3-a456-426655440000\n--abcde12345\nContent-Disposition: form-data; name=\"profileImage\"; filename=\"image1.png\"\nContent-Type: application/octet-stream\n{_file content_}\n--abcde12345" multipartEncoded) $ do
+    it "sends a multipart form" $ do
+      postMultipartForm "foo" "abcde12345" [
+        (FMFormField, "text/plain", "id", "123e4567-e89b-12d3-a456-426655440000")
+        , (FMFile "image1.png", "application/octet-stream", "profileImage", "{_file content_}")
+        ] `shouldRespondWith` 200
+
   where
     accept = [(hAccept, "application/json")]
     body = "{\"foo\": 1}"
     formEncoded = [(hContentType, "application/x-www-form-urlencoded")]
+    mpSep = "abcde12345"
+    multipartEncoded = [(hContentType, "multipart/form-data; boundary=" <> mpSep)]
+
+
