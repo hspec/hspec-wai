@@ -7,6 +7,7 @@ module Test.Hspec.Wai.Matcher (
 , Body
 , (<:>)
 , bodyEquals
+, bodyContains
 , match
 , formatHeader
 ) where
@@ -19,7 +20,7 @@ import           Data.Maybe
 import           Data.String
 import           Data.Text.Lazy.Encoding (encodeUtf8)
 import qualified Data.Text.Lazy as T
-import           Data.ByteString (ByteString)
+import           Data.ByteString (ByteString, isInfixOf)
 import qualified Data.ByteString.Lazy as LB
 import           Network.HTTP.Types
 import           Network.Wai.Test
@@ -39,14 +40,20 @@ data MatchHeader = MatchHeader ([Header] -> Body -> Maybe String)
 data MatchBody = MatchBody ([Header] -> Body -> Maybe String)
 
 bodyEquals :: Body -> MatchBody
-bodyEquals body = MatchBody (\_ actual -> bodyMatcher actual body)
+bodyEquals body = MatchBody $ \_ actual -> bodyMismatch "body mismatch:" actual body
+                                               <$ guard (toStrict actual /= toStrict body)
+
+bodyContains :: Body -> MatchBody
+bodyContains sub = MatchBody $ \_ full -> bodyMismatch "body substring search failed:" full sub
+                                              <$ guard (not $ toStrict sub `isInfixOf` toStrict full)
+
+bodyMismatch :: String -> Body -> Body -> String
+bodyMismatch msg actual expected = actualExpected msg actual_ expected_
   where
-    bodyMatcher :: Body -> Body -> Maybe String
-    bodyMatcher (toStrict -> actual) (toStrict -> expected) = actualExpected "body mismatch:" actual_ expected_ <$ guard (actual /= expected)
-      where
-        (actual_, expected_) = case (safeToString actual, safeToString expected) of
-          (Just x, Just y) -> (x, y)
-          _ -> (show actual, show expected)
+    f = safeToString . toStrict
+    (actual_, expected_) = case (f actual, f expected) of
+      (Just x, Just y) -> (x, y)
+      _ -> (show actual, show expected)
 
 matchAny :: MatchBody
 matchAny = MatchBody (\_ _ -> Nothing)
